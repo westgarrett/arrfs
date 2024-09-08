@@ -1,6 +1,7 @@
 #!/bin/bash
 LOG_FILE="logs/$(basename "${0}" .sh).log"
-
+PYTHON_ENTRY="main.py"
+radarr_eventtype = "Test"
 function log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S')" >> "${LOG_FILE}"
 }
@@ -23,7 +24,7 @@ case "${radarr_eventtype}" in
         echo ;;
     Test)
         log "Test"
-        python3 test.py
+        python3 "${PYTHON_ENTRY}"
         echo ;;
     
 esac
