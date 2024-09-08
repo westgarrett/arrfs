@@ -4,14 +4,12 @@ import shutil
 import subprocess
 from typing import List, Dict
 
-DB_DRIVE: = "~/rfs/db_drive"
+DB_DRIVE: str = "~/rfs/db_drive"
 TC_DRIVE: str = "~/rfs/tc_drive"
 STORAGE_DRIVES: Dict[str, str] = {
     "uuid0": "~/rfs/storage0",
     "uuid1": "~/rfs/storage1",
 }
-
-import click
 
 # Group 1: On Grab Event
 @click.group()
