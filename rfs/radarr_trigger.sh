@@ -1,31 +1,27 @@
 #!/bin/bash
-ROOT_DIR="~/rfs"
-LOG_FILE="${ROOT_DIR}/rfs/logs/$(basename "${0}" .sh).log"
-PYTHON_ENTRY="${ROOT_DIR}/rfs/main.py"
-radarr_eventtype="Test"
+LOG_FILE="logs/$(basename "${0}" .sh).log"
+PYTHON_ENTRY="main.py"
+# radarr_eventtype="Test"
 set -e
 
 function log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S')" >> "${LOG_FILE}"
+    echo "$(date '+%Y-%m-%d %H:%M:%S')" ${1} >> "${LOG_FILE}"
 }
 
-# Define an array of valid event types
-valid_event_types=("Grab" "Download" "Rename" "HealthIssue" "ApplicationUpdate" "Test")
-
-# Check if event type is valid
-if [[ ! " ${valid_event_types[@]} " =~ " ${1} " ]]; then
-    log "Unknown event type: ${1}"
-    exit 1
-fi
-
 # Check if Python script exists and is executable
-if [ ! -x "${PYTHON_ENTRY}" ]; then
-    log "Error: Python script '${PYTHON_ENTRY}' is not executable"
-    exit 1
+# if [ ! -x "${PYTHON_ENTRY}" ]; then
+#     log "Error: Python script '${PYTHON_ENTRY}' is not executable"
+#     exit 1
+# fi
+
+args="${@}"
+if [ -z "${radarr_eventtype}" ] 
+then
+    log "No radarr event type provided. Using \"Test\" as the default"
 fi
 
-log "${radarr_eventtype} triggered"
-log "Running Python script with arguments: ${@}"
+log "Radarr \"${radarr_eventtype}\" triggered"
+log "Running Python script with arguments: --callarr radarr ${args}"
 
-python3 "${PYTHON_ENTRY}" "radarr" "${@}"
+python3 "${PYTHON_ENTRY}" "--callarr" "radarr" ${args}
 exit 0

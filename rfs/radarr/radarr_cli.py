@@ -2,17 +2,17 @@ import click
 import os
 import shutil
 import subprocess
-from typing import List, Dict, Union
+from typing import Tuple, Dict, Union
 
+DB_DRIVE_PATH: str = "./db_drive"
+TC_DRIVE_PATH: str = "./tc_drive"
+STORAGE_DRIVE_PATH: Tuple[str, ...] = (
+    "./storage0",
+    "./storage1",
+)
 
 # Group 1: On Grab Event
 @click.group()
-@click.option(
-    "--radarr_eventtype",
-    envvar="radarr_eventtype",
-    default=None,
-    help="Event type environment variable passed from Radarr",
-)
 @click.option(
     "--radarr_download_client",
     envvar="radarr_download_client",
@@ -189,7 +189,7 @@ def grab(ctx):
     help="|-delimited list of full paths to files that were deleted",
 )
 @click.pass_context
-def upgrade(ctx):
+def download(ctx):
     ctx.ensure_object(dict)
 
 
@@ -289,13 +289,22 @@ def update(ctx):
 @click.pass_context
 def test(ctx):
     ctx.ensure_object(dict)
+    click.echo(f"Radarr \"{get_radarr_eventtype()}\" was successful")
 
+def get_radarr_eventtype():
+    return os.getenv("radarr_eventtype", "Test")
 
-@click.command()
-def handle_event(**kwargs):
-    for key, value in kwargs.items():
-        click.echo(f"{key}: {value}")
+def handle_event(db_drive_path, tc_drive_path, storage_drive_path):
+    radarr_eventtype = get_radarr_eventtype()
+    event_types = ["Grab", "Rename", "Download", "HealthIssue", "ApplicationUpdate", "Test"]
+    if radarr_eventtype is None:
+        raise ValueError(f"radarr_eventtype == {radarr_eventtype}")
+    for _type in event_types:
+        if radarr_eventtype == _type:
+            eval(f"{_type.lower()}()")
 
 
 if __name__ == "__main__":
+    # process the radarr_eventtype
+    radarr_eventtype()
     handle_event()
