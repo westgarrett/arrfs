@@ -3,7 +3,7 @@ import os
 import shutil
 import subprocess
 import sys
-from typing import Tuple, Dict, Union
+from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr
 
 DB_DRIVE_PATH: str = "./db_drive"
@@ -60,7 +60,6 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
 #     def __str__(self):
 #         return f"ArrEvent(callarr={self.callarr}, debug={self.debug}, db_drive_path={self.db_drive_path}, tc_drive_path={self.tc_drive_path}, storage_drive_path={self.storage_drive_path})"
 
-
 # Event type passed from the trigger shell script
 @click.command()
 @click.option(
@@ -84,7 +83,7 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
     help=f"Storage drives to bundle together, ex. {STORAGE_DRIVE_PATH}",
 )
 @click.pass_context
-def eventtype(ctx, callarr, debug, db_drive_path, tc_drive_path, storage_drive_path):
+def eventtype(ctx, callarr, debug, db_drive_path: str, tc_drive_path: str, storage_drive_path: List[str]):
     # ctx.obj = ArrEvent(callarr, debug, db_drive_path, tc_drive_path, storage_drive_path)
     click.echo(ctx.obj)
     if callarr == "radarr":
