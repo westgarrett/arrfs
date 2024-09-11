@@ -1,12 +1,15 @@
 #!/bin/bash
 LOG_FILE="logs/$(basename "${0}" .sh).log"
 PYTHON_ENTRY="main.py"
-# radarr_eventtype="Test"
 set -e
 
 function log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S')" ${1} >> "${LOG_FILE}"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') [$(basename ${0} .sh)]" "${1}" >> "${LOG_FILE}"
 }
+
+if [ -z "${radarr_eventtype}" ]; then
+    radarr_eventtype="Test"
+fi
 
 # Check if Python script exists and is executable
 # if [ ! -x "${PYTHON_ENTRY}" ]; then
