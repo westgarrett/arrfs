@@ -7,18 +7,8 @@ function log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') [$(basename ${0} .sh)]" "${1}" >> "${LOG_FILE}"
 }
 
-if [ -z "${radarr_eventtype}" ]; then
-    radarr_eventtype="Test"
-fi
-
-# Check if Python script exists and is executable
-# if [ ! -x "${PYTHON_ENTRY}" ]; then
-#     log "Error: Python script '${PYTHON_ENTRY}' is not executable"
-#     exit 1
-# fi
-
 args="${@}"
-if [ -z "${radarr_eventtype}" ] 
+if [ -z "${radarr_eventtype}" ]
 then
     log "No radarr event type provided. Using \"Test\" as the default"
 fi
