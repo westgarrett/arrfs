@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import sys
 from typing import Tuple, List, Dict, Union
-import radarr.radarr_cli as radarr
+import radarr.radarr_cli as radarr_cli
 
 DB_DRIVE_PATH: str = "./db_drive"
 TC_DRIVE_PATH: str = "./tc_drive"
@@ -84,10 +84,8 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
 )
 @click.pass_context
 def eventtype(ctx, callarr, debug, db_drive_path: str, tc_drive_path: str, storage_drive_path: List[str]):
-    # ctx.obj = ArrEvent(callarr, debug, db_drive_path, tc_drive_path, storage_drive_path)
-    click.echo(ctx.obj)
     if callarr == "radarr":
-        radarr.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
+        radarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
     elif callarr == "sonarr":
         ctx.forward(sonarr.handle_event)
     else:
@@ -107,5 +105,4 @@ def compare_drive_capacity():
 
 
 if __name__ == "__main__":
-    print(sys.argv[1:])
     eventtype()
