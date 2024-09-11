@@ -106,6 +106,7 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
 @click.pass_context
 def grab(ctx):
     ctx.ensure_object(dict)
+    # do stuff
 
 
 # Group 2: On Import/On Upgrade Event
@@ -191,6 +192,7 @@ def grab(ctx):
 @click.pass_context
 def download(ctx):
     ctx.ensure_object(dict)
+    # do stuff
 
 
 # Group 3: On Rename Event
@@ -228,6 +230,7 @@ def download(ctx):
 @click.pass_context
 def rename(ctx):
     ctx.ensure_object(dict)
+    # do stuff
 
 
 # Group 4: On Health Check Event
@@ -283,6 +286,7 @@ def health(ctx):
 )
 def update(ctx):
     ctx.ensure_object(dict)
+    # do stuff
 
 
 # Group 6: On Test Event
@@ -306,5 +310,4 @@ def handle_event(db_drive_path, tc_drive_path, storage_drive_path):
 
 if __name__ == "__main__":
     # process the radarr_eventtype
-    radarr_eventtype()
     handle_event()
