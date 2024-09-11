@@ -1,3 +1,4 @@
+import sys
 import click
 import os
 import shutil
@@ -11,302 +12,462 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
     "./storage1",
 )
 
+
 # Group 1: On Grab Event
-@click.group()
-@click.option(
-    "--radarr_download_client",
+@click.command()
+@click.argument(
+    "radarr_download_client",
     envvar="radarr_download_client",
+    required=False,
     default=None,
-    help="Download client (empty if unknown)",
 )
-@click.option(
-    "--radarr_download_id",
+@click.argument(
+    "radarr_download_id",
     envvar="radarr_download_id",
+    required=False,
     default=None,
-    help="Hash of the torrent/NZB file",
 )
-@click.option(
-    "--radarr_movie_id",
+@click.argument(
+    "radarr_movie_id",
     envvar="radarr_movie_id",
+    required=False,
     default=None,
-    help="Internal ID of the movie",
 )
-@click.option(
-    "--radarr_movie_imdbid",
+@click.argument(
+    "radarr_movie_imdbid",
     envvar="radarr_movie_imdbid",
+    required=False,
     default=None,
-    help="IMDb ID for the movie (empty if unknown)",
 )
-@click.option(
-    "--radarr_movie_in_cinemas_date",
+@click.argument(
+    "radarr_movie_in_cinemas_date",
     envvar="radarr_movie_in_cinemas_date",
+    required=False,
     default=None,
-    help="Cinema release date (empty if unknown)",
 )
-@click.option(
-    "--radarr_movie_physical_release_date",
+@click.argument(
+    "radarr_movie_physical_release_date",
     envvar="radarr_movie_physical_release_date",
+    required=False,
     default=None,
-    help="Physical release date (empty if unknown)",
 )
-@click.option(
-    "--radarr_movie_title",
+@click.argument(
+    "radarr_movie_title",
     envvar="radarr_movie_title",
+    required=False,
     default=None,
-    help="Title of the movie",
 )
-@click.option(
-    "--radarr_movie_tmdbid",
+@click.argument(
+    "radarr_movie_tmdbid",
     envvar="radarr_movie_tmdbid",
+    required=False,
     default=None,
-    help="TMDb ID for the movie",
 )
-@click.option(
-    "--radarr_movie_year",
+@click.argument(
+    "radarr_movie_year",
     envvar="radarr_movie_year",
+    required=False,
     default=None,
-    help="Release year of the movie",
 )
-@click.option(
-    "--radarr_release_indexer",
+@click.argument(
+    "radarr_release_indexer",
     envvar="radarr_release_indexer",
+    required=False,
     default=None,
-    help="Indexer from which the release was grabbed",
 )
-@click.option(
-    "--radarr_release_quality",
+@click.argument(
+    "radarr_release_quality",
     envvar="radarr_release_quality",
+    required=False,
     default=None,
-    help="Quality name of the release, as detected by Radarr",
 )
-@click.option(
-    "--radarr_release_qualityversion",
+@click.argument(
+    "radarr_release_qualityversion",
     envvar="radarr_release_qualityversion",
+    required=False,
     default=None,
-    help="Quality version of the release",
 )
-@click.option(
-    "--radarr_release_releasegroup",
+@click.argument(
+    "radarr_release_releasegroup",
     envvar="radarr_release_releasegroup",
+    required=False,
     default=None,
-    help="Release group (empty if unknown)",
 )
-@click.option(
-    "--radarr_release_size",
+@click.argument(
+    "radarr_release_size",
     envvar="radarr_release_size",
+    required=False,
     default=None,
-    help="Size of the release",
 )
-@click.option(
-    "--radarr_release_title",
+@click.argument(
+    "radarr_release_title",
     envvar="radarr_release_title",
+    required=False,
     default=None,
-    help="Torrent/NZB title",
 )
-@click.pass_context
-def grab(ctx):
-    ctx.ensure_object(dict)
-    # do stuff
+def grab(
+    radarr_download_client,
+    radarr_download_id,
+    radarr_movie_id,
+    radarr_movie_imdbid,
+    radarr_movie_in_cinemas_date,
+    radarr_movie_physical_release_date,
+    radarr_movie_title,
+    radarr_movie_tmdbid,
+    radarr_movie_year,
+    radarr_release_indexer,
+    radarr_release_quality,
+    radarr_release_qualityversion,
+    radarr_release_releasegroup,
+    radarr_release_size,
+    radarr_release_title,
+):
+    print("grab command")
+    print(
+        radarr_download_client,
+        radarr_download_id,
+        radarr_movie_id,
+        radarr_movie_imdbid,
+        radarr_movie_in_cinemas_date,
+        radarr_movie_physical_release_date,
+        radarr_movie_title,
+        radarr_movie_tmdbid,
+        radarr_movie_year,
+        radarr_release_indexer,
+        radarr_release_quality,
+        radarr_release_qualityversion,
+        radarr_release_releasegroup,
+        radarr_release_size,
+        radarr_release_title,
+    )
 
 
 # Group 2: On Import/On Upgrade Event
-@click.group()
-@click.option(
-    "--radarr_isupgrade",
+@click.command()
+@click.argument(
+    "radarr_download_id",
+    envvar="radarr_download_id",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_download_client",
+    envvar="radarr_download_client",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_isupgrade",
     envvar="radarr_isupgrade",
+    required=False,
     default=None,
-    help="True if an existing file is upgraded, False otherwise",
 )
-@click.option(
-    "--radarr_movie_path",
+@click.argument(
+    "radarr_movie_id",
+    envvar="radarr_movie_id",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_imdbid",
+    envvar="radarr_movie_imdbid",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_in_cinemas_date",
+    envvar="radarr_movie_in_cinemas_date",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_path",
     envvar="radarr_movie_path",
+    required=False,
     default=None,
-    help="Full path to the movie",
 )
-@click.option(
-    "--radarr_moviefile_id",
+@click.argument(
+    "radarr_movie_physical_release_date",
+    envvar="radarr_movie_physical_release_date",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_title",
+    envvar="radarr_movie_title",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_tmdbid",
+    envvar="radarr_movie_tmdbid",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_year",
+    envvar="radarr_movie_year",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_moviefile_id",
     envvar="radarr_moviefile_id",
+    required=False,
     default=None,
-    help="Internal ID of the movie file",
 )
-@click.option(
-    "--radarr_moviefile_relativepath",
+@click.argument(
+    "radarr_moviefile_relativepath",
     envvar="radarr_moviefile_relativepath",
+    required=False,
     default=None,
-    help="Path to the movie file, relative to the movie path",
 )
-@click.option(
-    "--radarr_moviefile_path",
+@click.argument(
+    "radarr_moviefile_path",
     envvar="radarr_moviefile_path",
+    required=False,
     default=None,
-    help="Full path to the movie file",
 )
-@click.option(
-    "--radarr_moviefile_quality",
+@click.argument(
+    "radarr_moviefile_quality",
     envvar="radarr_moviefile_quality",
+    required=False,
     default=None,
-    help="Quality name of the movie file",
 )
-@click.option(
-    "--radarr_moviefile_qualityversion",
+@click.argument(
+    "radarr_moviefile_qualityversion",
     envvar="radarr_moviefile_qualityversion",
+    required=False,
     default=None,
-    help="Quality version of the movie file",
 )
-@click.option(
-    "--radarr_moviefile_releasegroup",
+@click.argument(
+    "radarr_moviefile_releasegroup",
     envvar="radarr_moviefile_releasegroup",
+    required=False,
     default=None,
-    help="Release group of the movie file",
 )
-@click.option(
-    "--radarr_moviefile_scenename",
+@click.argument(
+    "radarr_moviefile_scenename",
     envvar="radarr_moviefile_scenename",
+    required=False,
     default=None,
-    help="Original release name",
 )
-@click.option(
-    "--radarr_moviefile_sourcepath",
-    envvar="radarr_moviefile_sourcepath",
+@click.argument(
+    "radarr_deletedrelativepath",
+    envvar="radarr_deletedrelativepath",
+    required=False,
     default=None,
-    help="Full path to the imported movie file",
 )
-@click.option(
-    "--radarr_moviefile_sourcefolder",
-    envvar="radarr_moviefile_sourcefolder",
-    default=None,
-    help="Full path to the folder the movie file was imported from",
-)
-@click.option(
-    "--radarr_deletedrelativepaths",
-    envvar="radarr_deletedrelativepaths",
-    default=None,
-    help="|-delimited list of files that were deleted to import this file",
-)
-@click.option(
-    "--radarr_deletedpaths",
+@click.argument(
+    "radarr_deletedpaths",
     envvar="radarr_deletedpaths",
+    required=False,
     default=None,
-    help="|-delimited list of full paths to files that were deleted",
 )
-@click.pass_context
-def download(ctx):
-    ctx.ensure_object(dict)
-    # do stuff
+def download(
+    radarr_download_id,
+    radarr_download_client,
+    radarr_isupgrade,
+    radarr_movie_id,
+    radarr_movie_imdbid,
+    radarr_movie_in_cinemas_date,
+    radarr_movie_path,
+    radarr_movie_physical_release_date,
+    radarr_movie_title,
+    radarr_movie_tmdbid,
+    radarr_movie_year,
+    radarr_moviefile_id,
+    radarr_moviefile_relativepath,
+    radarr_moviefile_path,
+    radarr_moviefile_quality,
+    radarr_moviefile_qualityversion,
+    radarr_moviefile_releasegroup,
+    radarr_moviefile_scenename,
+    radarr_deletedrelativepath,
+    radarr_deletedpaths,
+):
+    click.echo("download event")
+    print(
+    radarr_download_id,
+    radarr_download_client,
+    radarr_isupgrade,
+    radarr_movie_id,
+    radarr_movie_imdbid,
+    radarr_movie_in_cinemas_date,
+    radarr_movie_path,
+    radarr_movie_physical_release_date,
+    radarr_movie_title,
+    radarr_movie_tmdbid,
+    radarr_movie_year,
+    radarr_moviefile_id,
+    radarr_moviefile_relativepath,
+    radarr_moviefile_path,
+    radarr_moviefile_quality,
+    radarr_moviefile_qualityversion,
+    radarr_moviefile_releasegroup,
+    radarr_moviefile_scenename,
+    radarr_deletedrelativepath,
+    radarr_deletedpaths,
+    )
 
 
 # Group 3: On Rename Event
-@click.group()
-@click.option(
-    "--radarr_moviefile_ids",
+@click.command()
+@click.argument(
+    "radarr_moviefile_ids",
     envvar="radarr_moviefile_ids",
+    required=False,
     default=None,
-    help=",-delimited list of file IDs",
 )
-@click.option(
-    "--radarr_moviefile_relativepaths",
+@click.argument(
+    "radarr_moviefile_relativepaths",
     envvar="radarr_moviefile_relativepaths",
+    required=False,
     default=None,
-    help="|-delimited list of relative paths",
 )
-@click.option(
-    "--radarr_moviefile_paths",
+@click.argument(
+    "radarr_moviefile_paths",
     envvar="radarr_moviefile_paths",
+    required=False,
     default=None,
-    help="|-delimited list of full paths",
 )
-@click.option(
-    "--radarr_moviefile_previousrelativepaths",
+@click.argument(
+    "radarr_moviefile_previousrelativepaths",
     envvar="radarr_moviefile_previousrelativepaths",
+    required=False,
     default=None,
-    help="|-delimited list of previous relative paths",
 )
-@click.option(
-    "--radarr_moviefile_previouspaths",
+@click.argument(
+    "radarr_moviefile_previouspaths",
     envvar="radarr_moviefile_previouspaths",
+    required=False,
     default=None,
-    help="|-delimited list of previous paths",
 )
-@click.pass_context
-def rename(ctx):
-    ctx.ensure_object(dict)
-    # do stuff
+def rename(
+    radarr_moviefile_ids,
+    radarr_moviefile_relativepaths,
+    radarr_moviefile_paths,
+    radarr_moviefile_previousrelativepaths,
+    radarr_moviefile_previouspaths,
+):
+    print("rename event")
+    print(
+        radarr_moviefile_ids,
+        radarr_moviefile_relativepaths,
+        radarr_moviefile_paths,
+        radarr_moviefile_previousrelativepaths,
+        radarr_moviefile_previouspaths,
+    )
 
 
 # Group 4: On Health Check Event
-@click.group()
-@click.option(
-    "--radarr_health_issue_level",
+@click.command()
+@click.argument(
+    "radarr_health_issue_level",
     envvar="radarr_health_issue_level",
+    required=False,
     default=None,
-    help="Type of health issue (Ok, Notice, Warning, or Error)",
 )
-@click.option(
-    "--radarr_health_issue_message",
+@click.argument(
+    "radarr_health_issue_message",
     envvar="radarr_health_issue_message",
+    required=False,
     default=None,
-    help="Message from the health issue",
 )
-@click.option(
-    "--radarr_health_issue_type",
+@click.argument(
+    "radarr_health_issue_type",
     envvar="radarr_health_issue_type",
+    required=False,
     default=None,
-    help="Area that triggered the health issue",
 )
-@click.option(
-    "--radarr_health_issue_wiki",
+@click.argument(
+    "radarr_health_issue_wiki",
     envvar="radarr_health_issue_wiki",
+    required=False,
     default=None,
-    help="Wiki URL for more details",
 )
-@click.pass_context
-def health(ctx):
-    ctx.ensure_object(dict)
+def healthissue(
+    radarr_health_issue_level,
+    radarr_health_issue_message,
+    radarr_health_issue_type,
+    radarr_health_issue_wiki,
+):
+    print(
+        radarr_health_issue_level,
+        radarr_health_issue_message,
+        radarr_health_issue_type,
+        radarr_health_issue_wiki,
+    )
+    click.echo("healthissue event")
 
 
 # Group 5: On Application Update Event
-@click.group()
-@click.option(
-    "--radarr_update_message",
+@click.command()
+@click.argument(
+    "radarr_update_message",
     envvar="radarr_update_message",
+    required=False,
     default=None,
-    help="Message from Radarr update",
 )
-@click.option(
-    "--radarr_update_newversion",
+@click.argument(
+    "radarr_update_newversion",
     envvar="radarr_update_newversion",
+    required=False,
     default=None,
-    help="New version Radarr updated to",
 )
-@click.option(
-    "--radarr_update_previousversion",
+@click.argument(
+    "radarr_update_previousversion",
     envvar="radarr_update_previousversion",
+    required=False,
     default=None,
-    help="Previous version Radarr updated from",
 )
-def update(ctx):
-    ctx.ensure_object(dict)
+def applicationupdate(
+    radarr_update_message, radarr_update_newversion, radarr_update_previousversion
+):
+    if radarr_update_message is None:
+        pass
+
+    if radarr_update_newversion is None:
+        pass
+
+    if radarr_update_previousversion is None:
+        pass
+
+    print(
+        radarr_update_message, radarr_update_newversion, radarr_update_previousversion
+    )
+    click.echo("applicationupdate event")
     # do stuff
 
 
 # Group 6: On Test Event
-@click.pass_context
-def test(ctx):
-    ctx.ensure_object(dict)
-    click.echo(f"Radarr \"{get_radarr_eventtype()}\" was successful")
+def test():
+    click.echo(f'Radarr "{get_radarr_eventtype()}" was successful')
+
 
 def get_radarr_eventtype():
-    return os.getenv("radarr_eventtype", "Test")
+    return os.getenv("radarr_eventtype", default="Test")
 
-def handle_event(db_drive_path, tc_drive_path, storage_drive_path):
+
+def handle_event(db_drive_path: str, tc_drive_path: str, storage_drive_path: str):
+    sys.argv = [__repr__]
     radarr_eventtype = get_radarr_eventtype()
-    event_types = ["Grab", "Rename", "Download", "HealthIssue", "ApplicationUpdate", "Test"]
+    event_types = [
+        "Grab",
+        "Rename",
+        "Download",
+        "HealthIssue",
+        "ApplicationUpdate",
+        "Test",
+    ]
     if radarr_eventtype is None:
         raise ValueError(f"radarr_eventtype == {radarr_eventtype}")
     for _type in event_types:
         if radarr_eventtype == _type:
             eval(f"{_type.lower()}()")
 
+
+__repr__: str = f"{__name__}.{get_radarr_eventtype().lower()}"
 
 if __name__ == "__main__":
     # process the radarr_eventtype
