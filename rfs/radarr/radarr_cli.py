@@ -253,6 +253,18 @@ def grab(
     default=None,
 )
 @click.argument(
+    "radarr_moviefile_sourcepath",
+    envvar="radarr_moviefile_sourcepath",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_moviefile_sourcefolder",
+    envvar="radarr_moviefile_sourcefolder",
+    required=False,
+    default=None,
+)
+@click.argument(
     "radarr_deletedrelativepath",
     envvar="radarr_deletedrelativepath",
     required=False,
@@ -283,6 +295,8 @@ def download(
     radarr_moviefile_qualityversion,
     radarr_moviefile_releasegroup,
     radarr_moviefile_scenename,
+    radarr_moviefile_sourcepath,
+    radarr_moviefile_sourcefolder,
     radarr_deletedrelativepath,
     radarr_deletedpaths,
 ):
@@ -306,6 +320,8 @@ def download(
     radarr_moviefile_qualityversion,
     radarr_moviefile_releasegroup,
     radarr_moviefile_scenename,
+    radarr_moviefile_sourcepath,
+    radarr_moviefile_sourcefolder,
     radarr_deletedrelativepath,
     radarr_deletedpaths,
     )
@@ -313,6 +329,54 @@ def download(
 
 # Group 3: On Rename Event
 @click.command()
+@click.argument(
+    "radarr_movie_id",
+    envvar="radarr_moviefile_id",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_title",
+    envvar="radarr_movie_title",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_year",
+    envvar="radarr_moviefile_year",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_path",
+    envvar="radarr_movie_path",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_imdbid",
+    envvar="radarr_movie_imdbid",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_tmdbid",
+    envvar="radarr_movie_tmdbid",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_in_cinemas_date",
+    envvar="radarr_movie_in_cinemas_date",
+    required=False,
+    default=None,
+)
+@click.argument(
+    "radarr_movie_physical_release_date",
+    envvar="radarr_movie_physical_release_date",
+    required=False,
+    default=None,
+)
 @click.argument(
     "radarr_moviefile_ids",
     envvar="radarr_moviefile_ids",
@@ -344,6 +408,14 @@ def download(
     default=None,
 )
 def rename(
+    radarr_movie_id,
+    radarr_movie_title,
+    radarr_movie_year,
+    radarr_movie_path,
+    radarr_movie_imdbid,
+    radarr_movie_tmdbid,
+    radarr_movie_in_cinemas_date,
+    radarr_movie_physical_release_date,
     radarr_moviefile_ids,
     radarr_moviefile_relativepaths,
     radarr_moviefile_paths,
@@ -352,7 +424,16 @@ def rename(
 ):
     print("rename event")
     print(
+        radarr_movie_id,
+        radarr_movie_title,
+        radarr_movie_year,
+        radarr_movie_path,
+        radarr_movie_imdbid,
+        radarr_movie_tmdbid,
+        radarr_movie_in_cinemas_date,
+        radarr_movie_physical_release_date,
         radarr_moviefile_ids,
+        radarr_moviefile_relativepaths,
         radarr_moviefile_relativepaths,
         radarr_moviefile_paths,
         radarr_moviefile_previousrelativepaths,
