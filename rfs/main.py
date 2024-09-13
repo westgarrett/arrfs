@@ -5,6 +5,7 @@ import subprocess
 import sys
 from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr_cli
+import sonarr.sonarr_cli as sonarr_cli
 
 DB_DRIVE_PATH: str = "./db_drive"
 TC_DRIVE_PATH: str = "./tc_drive"
@@ -87,7 +88,7 @@ def eventtype(ctx, callarr, debug, db_drive_path: str, tc_drive_path: str, stora
     if callarr == "radarr":
         radarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
     elif callarr == "sonarr":
-        ctx.forward(sonarr.handle_event)
+        sonarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
     else:
         raise ValueError(f"Unsupported callarr value: {callarr}")
 
