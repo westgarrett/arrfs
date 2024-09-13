@@ -44,7 +44,7 @@ cat << EOF > ${script_path}/docker-compose.yml
 ---
 services:
   radarr:
-    image: radarr:${tag}
+    image: lscr.io/linuxserver/radarr:${tag}
     container_name: radarr
     environment:
       - PUID=1000

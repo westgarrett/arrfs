@@ -44,7 +44,7 @@ cat << EOF > ${script_path}/docker-compose.yml
 ---
 services:
   sonarr:
-    image: sonarr:${tag}
+    image: lscr.io/linuxserver/sonarr:${tag}
     container_name: sonarr
     environment:
       - PUID=1000
