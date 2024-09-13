@@ -1,5 +1,5 @@
 #!/bin/bash
-ROOT_DIR="/custom"
+ROOT_DIR="$(pwd)"
 VENV_DIR="/config/venv"
 LOG_FILE="${ROOT_DIR}/logs/$(basename "${0}" .sh).log"
 PYTHON_ENTRY="${ROOT_DIR}/main.py"
