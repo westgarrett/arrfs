@@ -1,23 +1,22 @@
 #!/bin/bash
 
-# Define the default values for the paths
+# Define the default paths
 config_path="/home/gw/docker_stuff/radarr/config"
 downloads_path="/home/gw/rfs/rfs/tc_drive"
 custom_path="/home/gw/rfs/rfs/"
 storage_paths=("/home/gw/rfs/rfs/storage0" "/home/gw/rfs/rfs/storage1")  # Add more storage paths as needed
 
-# Define the options and their corresponding variables
+# Define options
 while getopts ":c:d:s:m:" opt; do
-  case $opt in
-    c) config_path="$OPTARG";;
-    d) downloads_path="$OPTARG";;
-    s) custom_path="$OPTARG";;
-    m) storage_paths+=("$OPTARG");;  # Append to the storage_paths array
-    \?) echo "Invalid option: -$OPTARG"; exit 1;;
+  case "${opt}" in
+    c) config_path="${OPTARG}";;
+    d) downloads_path="${OPTARG}";;
+    s) custom_path="${OPTARG}";;
+    m) storage_paths+=("${OPTARG}");;
+    \?) echo "Invalid option: -${OPTARG}"; exit 1;;
   esac
 done
 
-# Rest of the script remains the same
 docker_dir="$(pwd)/docker-radarr"
 
 if [ ! -d "${docker_dir}" ]; then
