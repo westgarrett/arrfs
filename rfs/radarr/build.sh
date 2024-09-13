@@ -29,6 +29,7 @@ cd "${docker_dir}"
 
 tag=$(date +'%d.%m.%Y_%N')
 sudo docker build --no-cache --pull -t lscr.io/linuxserver/radarr:"${tag}" .
+rm -rf "${docker_dir}"
 
 echo """
 ---
