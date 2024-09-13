@@ -1,5 +1,7 @@
 #!/bin/bash
 
+script_path="$(dirname $(readlink -f ${0}))"
+
 # Define the default paths
 git_repo="https://github.com/linuxserver/docker-radarr.git"
 config_path="/home/gw/docker_stuff/radarr/config"
@@ -19,20 +21,22 @@ while getopts ":r:c:d:s:m:" opt; do
   esac
 done
 
-docker_dir="$(pwd)/docker-radarr"
+docker_dir="${script_path}/docker-radarr"
 
 if [ ! -d "${docker_dir}" ]; then
-    git clone "${git_repo}"
+    git clone "${git_repo}" "${docker_dir}"
 fi
 
-cp "$(pwd)/Dockerfile" "${docker_dir}"
+cp "${script_path}/Dockerfile" "${docker_dir}"
+wd="$(pwd)"
 cd "${docker_dir}"
 
 tag=$(date +'%d.%m.%Y_%N')
 sudo docker build --no-cache --pull -t lscr.io/linuxserver/radarr:"${tag}" .
 rm -rf "${docker_dir}"
+cd "${wd}"
 
-echo """
+cat << EOF > ${script_path}/docker-compose.yml
 ---
 services:
   radarr:
@@ -51,4 +55,4 @@ services:
     ports:
       - 7878:7878
     restart: unless-stopped
-""" > docker-compose.yml
+EOF
