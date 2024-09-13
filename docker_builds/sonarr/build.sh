@@ -3,8 +3,8 @@
 script_path="$(dirname $(readlink -f ${0}))"
 
 # Define the default paths
-git_repo="https://github.com/linuxserver/docker-radarr.git"
-config_path="/home/${USER}/docker_stuff/radarr/config"
+git_repo="https://github.com/linuxserver/docker-sonarr.git"
+config_path="/home/${USER}/docker_stuff/sonarr/config"
 downloads_path="/home/${USER}/rfs/rfs/tc_drive"
 custom_path="/home/${USER}/rfs/rfs/"
 storage_paths=("/home/${USER}/rfs/rfs/storage0" "/home/${USER}/rfs/rfs/storage1")  # Add more storage paths as needed
@@ -21,7 +21,7 @@ while getopts ":r:c:d:s:m:" opt; do
   esac
 done
 
-docker_dir="${script_path}/docker-radarr"
+docker_dir="${script_path}/docker-sonarr"
 
 if [ ! -d "${docker_dir}" ]; then
     git clone "${git_repo}" "${docker_dir}"
@@ -36,16 +36,16 @@ wd="$(pwd)"
 cd "${docker_dir}"
 
 tag=$(date +'%d.%m.%Y_%N')
-sudo docker build --no-cache --pull -t lscr.io/linuxserver/radarr:"${tag}" .
+sudo docker build --no-cache --pull -t lscr.io/linuxserver/sonarr:"${tag}" .
 rm -rf "${docker_dir}"
 cd "${wd}"
 
 cat << EOF > ${script_path}/docker-compose.yml
 ---
 services:
-  radarr:
-    image: radarr:${tag}
-    container_name: radarr
+  sonarr:
+    image: sonarr:${tag}
+    container_name: sonarr
     environment:
       - PUID=1000
       - PGID=1000
@@ -54,8 +54,8 @@ services:
       - ${config_path}:/config
       - ${downloads_path}:/downloads
       - ${custom_path}:/custom
-      - ${storage_paths[0]}:/movies0
-      - ${storage_paths[1]}:/movies1  # Add more storage paths as needed
+      - ${storage_paths[0]}:/shows0
+      - ${storage_paths[1]}:/shows1  # Add more storage paths as needed
     ports:
       - 7878:7878
     restart: unless-stopped
