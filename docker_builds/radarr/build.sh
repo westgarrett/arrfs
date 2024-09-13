@@ -1,14 +1,16 @@
 #!/bin/bash
 
 # Define the default paths
+git_repo="https://github.com/linuxserver/docker-radarr.git"
 config_path="/home/gw/docker_stuff/radarr/config"
 downloads_path="/home/gw/rfs/rfs/tc_drive"
 custom_path="/home/gw/rfs/rfs/"
 storage_paths=("/home/gw/rfs/rfs/storage0" "/home/gw/rfs/rfs/storage1")  # Add more storage paths as needed
 
 # Define options
-while getopts ":c:d:s:m:" opt; do
+while getopts ":r:c:d:s:m:" opt; do
   case "${opt}" in
+    r) git_repo="${OPTARG}";;
     c) config_path="${OPTARG}";;
     d) downloads_path="${OPTARG}";;
     s) custom_path="${OPTARG}";;
@@ -20,7 +22,7 @@ done
 docker_dir="$(pwd)/docker-radarr"
 
 if [ ! -d "${docker_dir}" ]; then
-    git clone https://github.com/linuxserver/docker-radarr.git
+    git clone "${git_repo}"
 fi
 
 cp "$(pwd)/Dockerfile" "${docker_dir}"
