@@ -27,6 +27,11 @@ then
     exit 1
 fi
 
+if [ "${direction}" == "up" ]
+then
+    direction="up -d"
+fi
+
 if [ ! -f "${script_path}/${service}/docker-compose.yml" ]
 then
     echo "Error: docker-compose.yml file not found in ${script_path}"
@@ -34,7 +39,7 @@ then
     exit 1
 fi
 
-sudo docker-compose -f "${script_path}/${service}/docker-compose.yml" up -d
+sudo docker-compose -f "${script_path}/${service}/docker-compose.yml" ${direction}
 sudo docker ps
 
 exit 0
