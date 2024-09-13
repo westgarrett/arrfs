@@ -29,7 +29,8 @@ RUN \
   echo "**** clone the rfs github repo ****" && \
   mkdir /app/rfs && \
   "$(which git)" clone https://github.com/westgarrett/rfs.git /app/rfs && \
-  "$(which python3)" -m pip install -r /app/rfs/requirements.txt && \
+  ls -la /app/rfs && \
+  "$(which python3)" -m pip install -r /app/rfs/*/requirements.txt && \
   "deactivate" && \
   echo "**** install radarr ****" && \
   mkdir -p /app/radarr/bin && \
