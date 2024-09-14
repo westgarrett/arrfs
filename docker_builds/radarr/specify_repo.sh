@@ -1,16 +1,19 @@
 #!/bin/bash
-script_path="$(dirname $(readlink -f ${0}))"
+script_dir="$(dirname ${0})"
 repo="https://github.com/westgarrett/rfs.git"
 branch="$(git rev-parse --abbrev-ref HEAD)"
+# branch_single=true
+branch_args=${branch_single:-true} && branch_args="--single-branch" || branch_args=""
 destination="/app/rfs"
-if [ -f "${script_path}/Dockerfile" ]
+if [ -f "${script_dir}/Dockerfile" ]
 then
     echo "previous Dockerfile found, removing it"
-    rm "${script_path}/Dockerfile"
+    rm "${script_dir}/Dockerfile"
 fi
 
-cp "${script_path}/Dockerfile.template" "${script_path}/Dockerfile"
+cp "${script_dir}/Dockerfile.template" "${script_dir}/Dockerfile"
 
-sed -i 's|GIT_BRANCH|"-b '${branch}' --single-branch"|g' "${script_path}/Dockerfile"
-sed -i 's|GIT_REPO|'${repo}'|g' "${script_path}/Dockerfile"
-sed -i 's|GIT_DESTINATION|'${destination}'|g' "${script_path}/Dockerfile"
+sed -i 's|GIT_BRANCH|-b '${branch}'|g' "${script_dir}/Dockerfile"
+sed -i 's|BRANCH_SINGLE|'${branch_args}'|g' "${script_dir}/Dockerfile"
+sed -i 's|GIT_REPO|'${repo}'|g' "${script_dir}/Dockerfile"
+sed -i 's|GIT_DESTINATION|'${destination}'|g' "${script_dir}/Dockerfile"
