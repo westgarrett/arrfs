@@ -7,7 +7,7 @@ set -x
 echo "$(whoami)"
 ls -la "${ROOT_DIR}"
 
-function log() {
+function log_local() {
     if [ ! -d  "${ROOT_DIR}/logs" ]
     then
         mkdir -p "${ROOT_DIR}/logs"
@@ -20,16 +20,36 @@ function log() {
     done
 }
 
-# if [ ! -d "${VENV_DIR}" ]
-# then
-#     log "create a virtual environment and install requirements.txt"
-#     mkdir -p ${VENV_DIR}
-#     "$(which python3) -m venv ${VENV_DIR}"
-#     source "${VENV_DIR}/bin/activate"
-#     "$(which python3) -m pip install -r ${ROOT_DIR}/requirements.txt"
-# else
-#     source "${VENV_DIR}/bin/activate"
-# fi
+function log_remote() {
+    log_date="$(date '+%Y-%m-%d %H:%M:%S')"
+    for arg in "${@}"
+    do 
+        echo "[${log_date}] : [$(basename ${0} .sh)] : ${arg}"
+    done
+}
+
+function gen_venv() {
+    if [ ! -d "${VENV_DIR}" ]
+    then
+        log "create a virtual environment and install requirements.txt"
+        mkdir -p ${VENV_DIR}
+        "$(which python3) -m venv ${VENV_DIR}"
+        source "${VENV_DIR}/bin/activate"
+        "$(which python3) -m pip install -r ${ROOT_DIR}/requirements.txt"
+    else
+        source "${VENV_DIR}/bin/activate"
+    fi
+}
+
+log=log_local
+remote=false
+if [ "$(whoami)" == "abc" ]
+then
+    remote=true
+    log=log_remote
+else
+    gen_venv
+fi
 
 args="${@}"
 if [ -z "${radarr_eventtype}" ]
