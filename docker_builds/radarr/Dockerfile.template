@@ -32,7 +32,7 @@ RUN \
   ls -la /app/rfs && \
   "$(which python3)" -m pip install -r /app/rfs/*/requirements.txt && \
   "deactivate" && \
-  chown -R abc:users /app && \
+  chown -R 1000:1000 /app && \
   ls -la /app && \
   echo "**** install radarr ****" && \
   mkdir -p /app/radarr/bin && \
