@@ -28,7 +28,7 @@ RUN \
   source /app/venv/bin/activate && \
   echo "**** clone the rfs github repo ****" && \
   mkdir /app/rfs && \
-  "$(which git)" clone GIT_BRANCH GIT_REPO GIT_DESTINATION && \
+  "$(which git)" clone GIT_BRANCH GIT_BRANCH_SINGLE GIT_REPO GIT_DESTINATION && \
   ls -la /app/rfs && \
   "$(which python3)" -m pip install -r /app/rfs/*/requirements.txt && \
   "deactivate" && \
