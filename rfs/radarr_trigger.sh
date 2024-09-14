@@ -32,7 +32,7 @@ function log() {
 
 function get_venv() {
     remote="${1}"
-    if [ if ! "${remote}" == "true" || ! -d "${VENV_DIR}" ]
+    if [ ! "${remote}" == "true" || ! -d "${VENV_DIR}" ]
     then
         log "create a virtual environment and install requirements.txt"
         mkdir -p ${VENV_DIR}
