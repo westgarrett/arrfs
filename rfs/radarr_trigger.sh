@@ -31,7 +31,8 @@ function log() {
 }
 
 function gen_venv() {
-    if [ ! -d "${VENV_DIR}" ]
+    remote="${1}"
+    if [ if ! "${remote}" == "true" || ! -d "${VENV_DIR}" ]
     then
         log "create a virtual environment and install requirements.txt"
         mkdir -p ${VENV_DIR}
@@ -49,7 +50,7 @@ if [ "$(whoami)" == "abc" ]
 then
     remote="true"
 else
-    gen_venv
+    gen_venv "${remote}"
 fi
 
 args="${@}"
