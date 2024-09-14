@@ -1,8 +1,11 @@
 #!/bin/bash
 ROOT_DIR="$(dirname ${0})"
 VENV_DIR="${ROOT_DIR}/venv"
+PYTHON_ENTRY="${ROOT_DIR}/main.py"
 LOG_FILE="${ROOT_DIR}/logs/$(basename "${0}" .sh).log"
 set -x
+echo "$(whoami)"
+ls -la "${ROOT_DIR}"
 
 function log() {
     if [ ! -d  "${ROOT_DIR}/logs" ]
