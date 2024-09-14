@@ -4,13 +4,13 @@ VENV_DIR="/app/venv"
 PYTHON_ENTRY="${ROOT_DIR}/main.py"
 LOG_FILE="${ROOT_DIR}/logs/$(basename "${0}" .sh).log"
 # set -x
-echo "$(whoami)"
 ls -la "${ROOT_DIR}"
 
 function log() {
+    remote="${1}"
     log_date="$(date '+%Y-%m-%d %H:%M:%S')"
-    log_str="[${log_date}] : [$(basename ${0} .sh)]"
-    if [ "${1}" == "true" ]
+    log_str="[$(basename ${0} .sh)]"
+    if [ "${remote}" == "true" ]
     then
         shift
         for arg in "${@}"
@@ -23,8 +23,8 @@ function log() {
             mkdir -p "${ROOT_DIR}/logs"
         fi
         for arg in "${@}"
-        do 
-            echo "${log_str} : ${arg}" >> "${LOG_FILE}"
+        do
+            echo "[${log_date}] : ${log_str} : ${arg}" >> "${LOG_FILE}"
         done
     fi
 }
@@ -44,7 +44,7 @@ function get_venv() {
     fi
 }
 
-remote=false
+remote="false"
 if [ "$(whoami)" == "abc" ]
 then
     remote="true"
