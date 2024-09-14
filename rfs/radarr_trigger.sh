@@ -1,6 +1,6 @@
 #!/bin/bash
 ROOT_DIR="$(dirname ${0})"
-VENV_DIR="${ROOT_DIR}/venv"
+VENV_DIR="/app/venv"
 PYTHON_ENTRY="${ROOT_DIR}/main.py"
 LOG_FILE="${ROOT_DIR}/logs/$(basename "${0}" .sh).log"
 # set -x
@@ -18,7 +18,6 @@ function log() {
             echo "${log_str} : ${arg}"
         done
     else
-        shift
         if [ ! -d  "${ROOT_DIR}/logs" ]
         then
             mkdir -p "${ROOT_DIR}/logs"
@@ -32,15 +31,15 @@ function log() {
 
 function get_venv() {
     remote="${1}"
-    if [ ! "${remote}" == "true" ] || [ ! -d "${VENV_DIR}" ]
+    if [ ! "${remote}" == "true" ] && [ ! -d "${VENV_DIR}" ]
     then
         log "create a virtual environment and install requirements.txt"
-        mkdir -p ${VENV_DIR}
+        mkdir -p "${VENV_DIR}"
         "$(which python3) -m venv ${VENV_DIR}"
         source "${VENV_DIR}/bin/activate"
         "$(which python3) -m pip install -r ${ROOT_DIR}/requirements.txt"
     else
-        log "venv already exists"
+        log "${remote}" "venv already exists"
         source "${VENV_DIR}/bin/activate"
     fi
 }
