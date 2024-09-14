@@ -30,7 +30,7 @@ function log() {
     fi
 }
 
-function gen_venv() {
+function get_venv() {
     remote="${1}"
     if [ if ! "${remote}" == "true" || ! -d "${VENV_DIR}" ]
     then
@@ -49,9 +49,9 @@ remote=false
 if [ "$(whoami)" == "abc" ]
 then
     remote="true"
-else
-    gen_venv "${remote}"
 fi
+
+get_venv "${remote}"
 
 args="${@}"
 if [ -z "${radarr_eventtype}" ]
