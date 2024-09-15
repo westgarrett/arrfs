@@ -1,56 +1,64 @@
 #!/bin/bash
 ROOT_DIR="$(dirname ${0})"
-VENV_DIR="/app/venv"
+VENV_DIR="${ROOT_DIR}/venv"
+REMOTE=false
 PYTHON_ENTRY="${ROOT_DIR}/main.py"
 LOG_FILE="${ROOT_DIR}/logs/$(basename "${0}" .sh).log"
 # set -x
 ls -la "${ROOT_DIR}"
 
 function log() {
-    remote="${1}"
     log_date="$(date '+%Y-%m-%d %H:%M:%S')"
-    log_str="[$(basename ${0} .sh)]"
-    if [ "${remote}" == "true" ]
+    if "${REMOTE}"
     then
-        shift
+        log_str="[$(basename ${0} .sh).remote]"
         for arg in "${@}"
-        do 
-            echo "${log_str} : ${arg}"
+        do
+            if  [ "${arg}" ]
+            then
+                echo "${log_str} : ${arg}"
+            fi
         done
     else
         if [ ! -d  "${ROOT_DIR}/logs" ]
         then
             mkdir -p "${ROOT_DIR}/logs"
         fi
+        log_str="[$(basename ${0} .sh).local]"
         for arg in "${@}"
         do
-            echo "[${log_date}] : ${log_str} : ${arg}" >> "${LOG_FILE}"
+            if [ "${arg}" ]
+            then
+                echo "[${log_date}] : ${log_str} : ${arg}" >> "${LOG_FILE}"
+            fi
         done
     fi
 }
 
 function get_venv() {
-    remote="${1}"
-    if [ ! "${remote}" == "true" ] && [ ! -d "${VENV_DIR}" ]
+    if "${REMOTE}"
     then
-        log "create a virtual environment and install requirements.txt"
-        mkdir -p "${VENV_DIR}"
-        "$(which python3) -m venv ${VENV_DIR}"
-        source "${VENV_DIR}/bin/activate"
-        "$(which python3) -m pip install -r ${ROOT_DIR}/requirements.txt"
+        VENV_DIR="/app/venv"
     else
-        log "${remote}" "venv already exists"
-        source "${VENV_DIR}/bin/activate"
+        if [ ! -d "${VENV_DIR}" ]
+        then
+            log "create a virtual environment and install requirements.txt"
+            mkdir -p "${VENV_DIR}"
+            "$(which python3) -m venv ${VENV_DIR}"
+            "$(which python3) -m pip install -r ${ROOT_DIR}/requirements.txt"
+        fi
     fi
+    log "Activating the virtual environment in ${VENV_DIR}"
+    source "${VENV_DIR}/bin/activate"
 }
 
-remote="false"
 if [ "$(whoami)" == "abc" ]
 then
-    remote="true"
+    VENV_DIR="/app/venv"
+    REMOTE=true
 fi
 
-get_venv "${remote}"
+get_venv
 
 args="${@}"
 if [ -z "${radarr_eventtype}" ]
