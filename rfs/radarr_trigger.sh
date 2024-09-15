@@ -64,11 +64,11 @@ args="${@}"
 if [ -z "${radarr_eventtype}" ]
 then
     radarr_eventtype="Test"
-    log "${remote}" "No radarr event type provided. Using \"Test\" as the default"
+    log "No radarr event type provided. Using \"Test\" as the default"
 fi
 
-log "${remote}" "Radarr \"${radarr_eventtype}\" triggered"
-log "${remote}" "Running Python script with arguments: --callarr radarr ${args}"
+log "Radarr \"${radarr_eventtype}\" triggered"
+log "Running Python script with arguments: --callarr radarr ${args}"
 
 "$(which python3)" "${PYTHON_ENTRY}" "--callarr" "radarr" ${args}
 exit 0
