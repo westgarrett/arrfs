@@ -1,6 +1,6 @@
 #!/bin/bash
 
-script_path="$(dirname $(readlink -f ${0}))"
+script_path="$(dirname ${0})"
 
 # Define the default paths
 git_repo="https://github.com/linuxserver/docker-radarr.git"
@@ -30,12 +30,16 @@ fi
 if [ -f "${script_path}/Dockerfile" ]
 then
   cp "${script_path}/Dockerfile" "${docker_dir}"
+else
+  echo "Dockerfile not found in script directory, generating"
+  bash "${script_path}/gen_dockerfile.sh"
 fi
 
 wd="$(pwd)"
 cd "${docker_dir}"
 
 tag=$(date +'%d.%m.%Y_%N')
+
 sudo docker build --no-cache --pull -t lscr.io/linuxserver/radarr:"${tag}" .
 rm -rf "${docker_dir}"
 cd "${wd}"
