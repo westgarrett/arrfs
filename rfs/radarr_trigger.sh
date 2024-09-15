@@ -63,7 +63,7 @@ get_venv
 args="${@}"
 if [ -z "${radarr_eventtype}" ]
 then
-    radarr_eventtype="Test"
+    export radarr_eventtype="Test"
     log "No radarr event type provided. Using \"Test\" as the default"
 fi
 
