@@ -85,6 +85,7 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
 )
 @click.pass_context
 def eventtype(ctx, callarr, debug, db_drive_path: str, tc_drive_path: str, storage_drive_path: List[str]):
+    """Event type passed from the trigger shell script"""
     if callarr == "radarr":
         radarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
     elif callarr == "sonarr":
@@ -94,14 +95,22 @@ def eventtype(ctx, callarr, debug, db_drive_path: str, tc_drive_path: str, stora
 
 
 def create_symlink(db_path: str, true_path: str):
-    pass
+    """Create a symbolic link to the true path."""
+    if os.path.exists(db_path):
+        os.remove(db_path)
+        os.symlink(true_path, db_path)
+    else:
+        os.symlink(true_path, db_path)
+    return db_path
 
 
 def get_drive_used_capacity(drive_uuid: str):
+    """Get the used capacity of a drive."""
     pass
 
 
 def compare_drive_capacity():
+    """Compare the capacity of the drives."""
     pass
 
 
