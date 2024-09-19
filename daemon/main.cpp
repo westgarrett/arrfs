@@ -1,37 +1,39 @@
-#include <iostream>
+#ifndef BOOST_LOCKFREE_FIFO_HPP_INCLUDED
+#define BOOST_LOCKFREE_FIFO_HPP_INCLUDED
+
+#include <boost/lockfree/detail/atomic.hpp>
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/program_options.hpp>
+#include <boost/lockfree/queue.hpp>
+#include <boost/thread/thread.hpp>          // Boost threads
+#include <boost/chrono.hpp>          // Boost chrono
+#include <memory>
 #include <fstream>
-#include <string>
-#include <map>
-#include <vector>
-#include <atomic>
-#include <mutex>
-#include <boost/interprocess/interprocess_fwd.hpp>
-#include <boost/lockfree/lockfree_forward.hpp>
+#include <iostream>
 
-namespace bi = boost::interprocess;
-namespace bl = boost::lockfree;
+namespace bi = boost::interprocess;   // Alias for boost::interprocess
+namespace po = boost::program_options; // Alias for boost::program_options
 
-// Configuration file format
+// Disk configuration
 struct DiskConfig {
     std::string uuid;
     int capacity;
     int available;
 };
 
-// Daemon state
-struct DaemonState {
-    std::atomic<std::vector<DiskConfig>> disks;
-    std::mutex mutex_;
-};
-
-// Daemon class
+// Daemon class (no unnecessary nesting)
 class Daemon {
 public:
-    Daemon(const std::string& config_file) : config_file_(config_file) {
+    Daemon(const std::string& config_file)
+        : config_file_(config_file), queue_(1024) { // Initialize queue with capacity
         // Initialize shared memory segment
-        segment_ = bi::managed_shared_memory(bi::open_or_create_t, "daemon_state", 1024);
-        state_ = segment_.find_or_construct<DaemonState>("daemon_state")();
+        shm_ = bi::shared_memory_object(bi::open_or_create, "daemon_state", bi::read_write);
+        region_ = bi::mapped_region(shm_, bi::read_write);
     }
+
+    Daemon(const Daemon&) = delete;               // Delete copy constructor
+    Daemon& operator=(const Daemon&) = delete;    // Delete copy assignment operator
 
     void run() {
         while (true) {
@@ -41,8 +43,8 @@ public:
             // Update state
             update_state();
 
-            // Sleep for 1 second
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            // Sleep for 1 second using Boost
+            boost::this_thread::sleep_for(boost::chrono::seconds(1));
         }
     }
 
@@ -65,14 +67,15 @@ private:
         po::notify(vm);
 
         // Update state
-        std::lock_guard<std::mutex> lock(state_->mutex_);
-        state_->disks.store(vm["disks"].as<std::vector<DiskConfig>>());
+        for (auto& disk : vm["disks"].as<std::vector<DiskConfig>>()) {
+            queue_.enqueue(disk);
+        }
     }
 
     void update_state() {
         // Update state based on configuration file
-        std::lock_guard<std::mutex> lock(state_->mutex_);
-        for (auto& disk : state_->disks.load()) {
+        DiskConfig disk;
+        while (queue_.dequeue(disk)) {
             // Update available capacity
             disk.available = get_available_capacity(disk.uuid);
         }
@@ -84,32 +87,9 @@ private:
     }
 
     std::string config_file_;
-    bi::named_shared_memory segment_;
-    DaemonState* state_;
+    bi::shared_memory_object shm_;
+    bi::mapped_region region_;
+    boost::lockfree::queue<DiskConfig> queue_;
 };
 
-int main(int argc, char* argv[]) {
-    po::options_description desc("Allowed options");
-    desc.add_options()
-        ("config-file", po::value<std::string>(), "Configuration file")
-        ("help", "Show help");
-
-    po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::notify(vm);
-
-    if (vm.count("help")) {
-        std::cout << desc << std::endl;
-        return 0;
-    }
-
-    if (!vm.count("config-file")) {
-        std::cerr << "Error: Configuration file is required" << std::endl;
-        return 1;
-    }
-
-    Daemon daemon(vm["config-file"].as<std::string>());
-    daemon.run();
-
-    return 0;
-}
+#endif // BOOST_LOCKFREE_FIFO_HPP_INCLUDED
