@@ -1,26 +1,48 @@
-#ifndef BOOST_LOCKFREE_FIFO_HPP_INCLUDED
-#define BOOST_LOCKFREE_FIFO_HPP_INCLUDED
 
 #include <boost/lockfree/detail/atomic.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lockfree/queue.hpp>
+#include <boost/lexical_cast.hpp>
+#include <sstream>
 #include <memory>
 #include <thread>
 #include <atomic>
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 
 namespace bi = boost::interprocess; // Alias for boost::interprocess
 namespace po = boost::program_options; // Alias for boost::program_options
 
 // Disk configuration
 struct DiskConfig {
-    std::string uuid;
+    char uuid[256];
     int capacity;
     int available;
+
+    DiskConfig() : capacity(0), available(0) {
+        uuid[0] = '\0'; // Initialize uuid with an empty string
+    }
+
+    DiskConfig(const char* id, int cap, int avail) : capacity(cap), available(avail) {
+        strncpy(uuid, id, sizeof(uuid)); // Safe string copy
+        uuid[sizeof(uuid) - 1] = '\0';   // Null-terminate to avoid overflow
+    }
+
+    // Overload operator<< for output
+    friend std::ostream& operator<<(std::ostream& os, const DiskConfig& disk) {
+        os << disk.uuid << ' ' << disk.capacity << ' ' << disk.available;
+        return os;
+    }
+
+    // Overload operator>> for input
+    friend std::istream& operator>>(std::istream& is, DiskConfig& disk) {
+        is >> disk.uuid >> disk.capacity >> disk.available;
+        return is;
+    }
 };
 
 // Daemon state
@@ -74,14 +96,14 @@ private:
 
         // Update state
         for (auto& disk : vm["disks"].as<std::vector<DiskConfig>>()) {
-            queue_.enqueue(disk);
+            queue_.push(disk);
         }
     }
 
     void update_state() {
         // Update state based on configuration file
         DiskConfig disk;
-        while (queue_.dequeue(disk)) {
+        while (queue_.pop(disk)) {
             // Update available capacity
             disk.available = get_available_capacity(disk.uuid);
         }
@@ -95,7 +117,16 @@ private:
     std::string config_file_;
     bi::shared_memory_object shm_;
     bi::mapped_region region_;
-    boost::lockfree::queue queue_;
+    boost::lockfree::queue<DiskConfig> queue_;
 };
 
-#endif // BOOST_LOCKFREE_FIFO_HPP_INCLUDED
+int main()
+{
+   std::vector<std::string> msg {"Hello", "C++", "World", "from", "VS Code", "and the C++ extension!"};
+
+   for (const std::string& word : msg)
+   {
+      std::cout << word << " ";
+   }
+   std::cout << std::endl;
+}
