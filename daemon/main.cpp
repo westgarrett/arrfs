@@ -6,13 +6,14 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lockfree/queue.hpp>
-#include <boost/thread/thread.hpp>          // Boost threads
-#include <boost/chrono.hpp>          // Boost chrono
 #include <memory>
+#include <thread>
+#include <atomic>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 
-namespace bi = boost::interprocess;   // Alias for boost::interprocess
+namespace bi = boost::interprocess; // Alias for boost::interprocess
 namespace po = boost::program_options; // Alias for boost::program_options
 
 // Disk configuration
@@ -22,7 +23,12 @@ struct DiskConfig {
     int available;
 };
 
-// Daemon class (no unnecessary nesting)
+// Daemon state
+struct DaemonState {
+    bi::shared_memory_object shm;
+    bi::mapped_region region;
+};
+
 class Daemon {
 public:
     Daemon(const std::string& config_file)
@@ -32,8 +38,8 @@ public:
         region_ = bi::mapped_region(shm_, bi::read_write);
     }
 
-    Daemon(const Daemon&) = delete;               // Delete copy constructor
-    Daemon& operator=(const Daemon&) = delete;    // Delete copy assignment operator
+    Daemon(const Daemon&) = delete; // Delete copy constructor
+    Daemon& operator=(const Daemon&) = delete; // Delete copy assignment operator
 
     void run() {
         while (true) {
@@ -43,8 +49,8 @@ public:
             // Update state
             update_state();
 
-            // Sleep for 1 second using Boost
-            boost::this_thread::sleep_for(boost::chrono::seconds(1));
+            // Sleep for 1 second
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
 
@@ -89,7 +95,7 @@ private:
     std::string config_file_;
     bi::shared_memory_object shm_;
     bi::mapped_region region_;
-    boost::lockfree::queue<DiskConfig> queue_;
+    boost::lockfree::queue queue_;
 };
 
 #endif // BOOST_LOCKFREE_FIFO_HPP_INCLUDED
