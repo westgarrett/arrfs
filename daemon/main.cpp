@@ -14,9 +14,6 @@
 #include <iostream>
 #include <cstring>
 
-namespace bi = boost::interprocess; // Alias for boost::interprocess
-namespace po = boost::program_options; // Alias for boost::program_options
-
 // Disk configuration
 struct DiskConfig {
     char uuid[256];
@@ -47,8 +44,8 @@ struct DiskConfig {
 
 // Daemon state
 struct DaemonState {
-    bi::shared_memory_object shm;
-    bi::mapped_region region;
+    boost::interprocess::shared_memory_object shm;
+    boost::interprocess::mapped_region region;
 };
 
 class Daemon {
@@ -56,8 +53,8 @@ public:
     Daemon(const std::string& config_file)
         : config_file_(config_file), queue_(1024) { // Initialize queue with capacity
         // Initialize shared memory segment
-        shm_ = bi::shared_memory_object(bi::open_or_create, "daemon_state", bi::read_write);
-        region_ = bi::mapped_region(shm_, bi::read_write);
+        shm_ = boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "daemon_state", boost::interprocess::read_write);
+        region_ = boost::interprocess::mapped_region(shm_, boost::interprocess::read_write);
     }
 
     Daemon(const Daemon&) = delete; // Delete copy constructor
@@ -86,13 +83,13 @@ private:
         }
 
         // Parse configuration file
-        po::options_description desc("Allowed options");
+        boost::program_options::options_description desc("Allowed options");
         desc.add_options()
-            ("disks", po::value<std::vector<DiskConfig>>()->multitoken(), "List of disks");
+            ("disks", boost::program_options::value<std::vector<DiskConfig>>()->multitoken(), "List of disks");
 
-        po::variables_map vm;
-        po::store(po::parse_config_file(file, desc), vm);
-        po::notify(vm);
+        boost::program_options::variables_map vm;
+        boost::program_options::store(boost::program_options::parse_config_file(file, desc), vm);
+        boost::program_options::notify(vm);
 
         // Update state
         for (auto& disk : vm["disks"].as<std::vector<DiskConfig>>()) {
@@ -115,8 +112,8 @@ private:
     }
 
     std::string config_file_;
-    bi::shared_memory_object shm_;
-    bi::mapped_region region_;
+    boost::interprocess::shared_memory_object shm_;
+    boost::interprocess::mapped_region region_;
     boost::lockfree::queue<DiskConfig> queue_;
 };
 
