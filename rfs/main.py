@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import sys
+import pathlib
 from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr_cli
 import sonarr.sonarr_cli as sonarr_cli
@@ -13,54 +14,6 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
     "./storage0",
     "./storage1",
 )
-
-# class ArrEvent:
-#     def __init__(
-#         self,
-#         callarr: str,
-#         debug: bool,
-#         db_drive_path: Union[str, None] = DB_DRIVE_PATH,
-#         tc_drive_path: Union[str, None] = TC_DRIVE_PATH,
-#         storage_drive_path: Union[Tuple[str, ...], None] = STORAGE_DRIVE_PATH,
-#     ):
-#         self.callarr = callarr
-#         self.debug = debug
-
-#         if os.path.exists(db_drive_path):
-#             self.db_drive_path = db_drive_path
-
-#         if os.path.exists(tc_drive_path):
-#             self.tc_drive_path = tc_drive_path
-
-#         self.storage_drive_path = []
-#         for path in storage_drive_path:
-#             if os.path.exists(path):
-#                 self.storage_drive_path.append(path)
-
-#     def get_callarr(self):
-#         return self.callarr
-
-#     def get_debug(self):
-#         return self.debug
-
-#     def get_db_drive_path(self):
-#         return self.db_drive_path
-
-#     def get_tc_drive_path(self):
-#         return self.tc_drive_path
-
-#     def get_storage_drive_path(self):
-#         return self.storage_drive_path
-
-#     def trigger(self):
-#         if self.callarr == "radarr":
-#             radarr.handle_event()
-#         else:
-#             raise ValueError(f"Unsupported callarr value: {self.callarr}")
-
-#     def __str__(self):
-#         return f"ArrEvent(callarr={self.callarr}, debug={self.debug}, db_drive_path={self.db_drive_path}, tc_drive_path={self.tc_drive_path}, storage_drive_path={self.storage_drive_path})"
-
 
 # Event type passed from the trigger shell script
 @click.command()
@@ -115,9 +68,14 @@ def create_symlink(db_path: str, true_path: str):
     return db_path
 
 
-def get_drive_used_capacity(drive_uuid: str):
+# def get_drive_used_capacity(drive_uuid: str):
+def get_directory_size(drive_path: str):
     """Get the used capacity of a drive."""
-    pass
+    # for now I'm going to use the size of the storage directory to simulate function
+    root_dir = pathlib.Path(drive_path)
+    for _file in root_dir.glob("**/*"):
+        if _file.is_file():
+            total_size += _file.stat().st_size
 
 
 def compare_drive_capacity():
