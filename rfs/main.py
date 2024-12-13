@@ -61,10 +61,14 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
 #     def __str__(self):
 #         return f"ArrEvent(callarr={self.callarr}, debug={self.debug}, db_drive_path={self.db_drive_path}, tc_drive_path={self.tc_drive_path}, storage_drive_path={self.storage_drive_path})"
 
+
 # Event type passed from the trigger shell script
 @click.command()
 @click.option(
-    "--callarr", default=None, help=f"The *arr invoking {os.path.basename(__file__)}", required=True
+    "--callarr",
+    default=None,
+    help=f"The *arr invoking {os.path.basename(__file__)}",
+    required=True,
 )
 @click.option("--debug/--no-debug", is_flag=True, default=False, help="Debug mode")
 @click.option(
@@ -84,7 +88,14 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
     help=f"Storage drives to bundle together, ex. {STORAGE_DRIVE_PATH}",
 )
 @click.pass_context
-def eventtype(ctx, callarr, debug, db_drive_path: str, tc_drive_path: str, storage_drive_path: List[str]):
+def eventtype(
+    ctx,
+    callarr,
+    debug,
+    db_drive_path: str,
+    tc_drive_path: str,
+    storage_drive_path: List[str],
+):
     """Event type passed from the trigger shell script"""
     if callarr == "radarr":
         radarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
