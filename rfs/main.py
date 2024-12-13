@@ -69,13 +69,14 @@ def create_symlink(db_path: str, true_path: str):
 
 
 # def get_drive_used_capacity(drive_uuid: str):
-def get_directory_size(drive_path: str):
+def get_directory_size(drive_path: str) -> int:
     """Get the used capacity of a drive."""
     # for now I'm going to use the size of the storage directory to simulate function
     root_dir = pathlib.Path(drive_path)
     for _file in root_dir.glob("**/*"):
         if _file.is_file():
             total_size += _file.stat().st_size
+    return total_size
 
 
 def compare_drive_capacity():
