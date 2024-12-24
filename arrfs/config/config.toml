@@ -1,0 +1,13 @@
+# config file for arrfs
+
+title = "arrfs configuration file"
+
+# the symlink file system location
+[arrfs]
+# arrfs = /your/arrfs/directory
+arrfs = /home/gw
+
+[storage]
+# storageN = /your/storage/path(s)
+storage0 = /home/gw/projects/arrfs/arrfs/storage0
+storage1 = /home/gw/projects/arrfs/arrfs/storage1
