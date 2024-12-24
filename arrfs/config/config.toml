@@ -12,3 +12,7 @@ arrfs = /home/gw
 # storageN = /your/storage/path(s)
 storage0 = /home/gw/projects/arrfs/arrfs/storage0
 storage1 = /home/gw/projects/arrfs/arrfs/storage1
+
+[radarr]
+git_repo = "https://github.com/linuxserver/docker-radarr.git"
+downloads_path = "/operations/downloads"
