@@ -1,9 +1,9 @@
-# RAID-like File System
+# A file system for shallow pockets
 
-## A symlink-based media distribution project
+## An \*arr-enabled media distribution project
 
 ## Overview
-Intelligently distribute media files across multiple drives or arrays of varying types, capacities, and speeds. It functions as a distributed file system by using symlinks to evenly spread media content across multiple storage medias
+Intelligently distribute media files across multiple drives or arrays of varying types, capacities, and speeds. It functions as a distributed file system using symlinks to evenly store media content across multiple storage devices
 
 
 ## Features
