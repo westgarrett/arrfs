@@ -39,8 +39,8 @@ then
     exit 1
 fi
 
-echo "Starting ${service} in ${direction} direction"
-sudo docker-compose -f "${script_path}/${service}/docker-compose.yml" ${direction}
+echo "Starting ${service} in \"${direction}\" direction"
+sudo docker compose -f "${script_path}/${service}/docker-compose.yml" ${direction}
 sudo docker ps
 
 exit 0
