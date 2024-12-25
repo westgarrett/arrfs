@@ -1,4 +1,6 @@
 # config file for arrfs
+# this exists on the system hosting the docker container
+# edit these parameters to adjust your install
 # https://toml.io/en/
 
 title = "arrfs configuration file"
@@ -6,13 +8,17 @@ title = "arrfs configuration file"
 # the symlink file system location
 [arrfs]
 # arrfs = /your/arrfs/directory
-arrfs = /home/gw
+arrfs = /home/gw/arrfs
 
 [storage]
 # storageN = /your/storage/path(s)
-storage0 = /home/gw/projects/arrfs/arrfs/storage0
-storage1 = /home/gw/projects/arrfs/arrfs/storage1
+storage0 = /storage0
+storage1 = /storage1
 
 [radarr]
 git_repo = "https://github.com/linuxserver/docker-radarr.git"
+downloads_path = "/operations/downloads"
+
+[sonarr]
+git_repo = "https://github.com/linuxserver/docker-sonarr.git"
 downloads_path = "/operations/downloads"
