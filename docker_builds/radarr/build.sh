@@ -1,12 +1,13 @@
 #!/bin/bash
-
-script_path="$(dirname ${0})"
+set -x
+script_path="$(dirname $(realpath ${0}))"
 
 # Define the default paths
 git_repo="https://github.com/linuxserver/docker-radarr.git"
 config_path="${script_path}/config"
 downloads_path="/tmp"
 custom_path="/tmp"
+docker_dir="/tmp/docker-radarr"
 storage_paths=( "${script_path}/storage0" "${script_path}/storage1" )  # Add more storage paths as needed
 
 # Define options
@@ -20,8 +21,6 @@ while getopts ":r:c:d:s:m:" opt; do
     \?) echo "Invalid option: -${OPTARG}"; exit 1;;
   esac
 done
-
-docker_dir="${script_path}/docker-radarr"
 
 if [ ! -d "${docker_dir}" ]
 then
@@ -43,22 +42,15 @@ do
   fi
 done
 
-if [ -f "${script_path}/Dockerfile" ]
-then
-  cp "${script_path}/Dockerfile" "${docker_dir}"
-else
-  echo "Dockerfile not found in script directory, generating"
-  bash "${script_path}/gen_dockerfile.sh"
-fi
-
-wd="$(pwd)"
-cd "${docker_dir}"
+bash "${script_path}/gen_dockerfile.sh"
+cp "${script_path}/Dockerfile" "${docker_dir}"
 
 tag=$(date +'%d.%m.%Y_%H.%M.%s')
 
+cd "${docker_dir}"
 sudo docker build --no-cache --pull -t lscr.io/linuxserver/radarr:"${tag}" .
+cd "${script_path}"
 rm -rf "${docker_dir}"
-cd "${wd}"
 
 cat << EOF > ${script_path}/docker-compose.yml
 ---

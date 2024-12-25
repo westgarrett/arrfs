@@ -27,10 +27,13 @@ RUN \
   "$(which python3)" -m venv /app/venv && \
   source /app/venv/bin/activate && \
   echo "**** clone the arrfs github repo ****" && \
-  mkdir /app/arrfs && \
   "$(which git)" clone GIT_BRANCH BRANCH_SINGLE GIT_REPO GIT_DESTINATION && \
+  cd /app/arrfs && \
   ls -la /app/arrfs && \
-  "$(which python3)" -m pip install -r /app/arrfs/*/requirements.txt && \
+  rm -rf $(ls -A | grep -Ev "arrfs|.git|__init__.py") && \
+  mv /app/arrfs/arrfs/* /app/arrfs && \
+  rmdir /app/arrfs/arrfs && \
+  "$(which python3)" -m pip install -r /app/arrfs/requirements.txt && \
   "deactivate" && \
   chown -R 1000:1000 /app && \
   ls -la /app && \

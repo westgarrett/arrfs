@@ -5,7 +5,13 @@ REMOTE=false
 PYTHON_ENTRY="${ROOT_DIR}/main.py"
 LOG_FILE="${ROOT_DIR}/logs/$(basename "${0}" .sh).log"
 # set -x
-ls -la "${ROOT_DIR}"
+# ls -la "${ROOT_DIR}"
+
+if [ ! -f "${LOG_FILE}" ]
+then
+    mkdir -p "${LOG_FILE}"
+    touch "${LOG_FILE}"
+fi
 
 function log() {
     log_date="$(date '+%Y-%m-%d %H:%M:%S')"
