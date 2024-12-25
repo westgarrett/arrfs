@@ -26,11 +26,11 @@ RUN \
   echo "**** create python venv ****" && \
   "$(which python3)" -m venv /app/venv && \
   source /app/venv/bin/activate && \
-  echo "**** clone the rfs github repo ****" && \
-  mkdir /app/rfs && \
+  echo "**** clone the arrfs github repo ****" && \
+  mkdir /app/arrfs && \
   "$(which git)" clone GIT_BRANCH BRANCH_SINGLE GIT_REPO GIT_DESTINATION && \
-  ls -la /app/rfs && \
-  "$(which python3)" -m pip install -r /app/rfs/*/requirements.txt && \
+  ls -la /app/arrfs && \
+  "$(which python3)" -m pip install -r /app/arrfs/*/requirements.txt && \
   "deactivate" && \
   chown -R 1000:1000 /app && \
   ls -la /app && \

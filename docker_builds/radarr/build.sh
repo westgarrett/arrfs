@@ -4,10 +4,10 @@ script_path="$(dirname ${0})"
 
 # Define the default paths
 git_repo="https://github.com/linuxserver/docker-radarr.git"
-config_path="/home/${USER}/docker_stuff/radarr/config"
-downloads_path="/home/${USER}/rfs/rfs/tc_drive"
-custom_path="/home/${USER}/rfs/rfs/"
-storage_paths=("/home/${USER}/rfs/rfs/storage0" "/home/${USER}/rfs/rfs/storage1")  # Add more storage paths as needed
+config_path="${script_path}/config"
+downloads_path="/tmp"
+custom_path="/tmp"
+storage_paths=( "${script_path}/storage0" "${script_path}/storage1" )  # Add more storage paths as needed
 
 # Define options
 while getopts ":r:c:d:s:m:" opt; do
@@ -23,9 +23,25 @@ done
 
 docker_dir="${script_path}/docker-radarr"
 
-if [ ! -d "${docker_dir}" ]; then
+if [ ! -d "${docker_dir}" ]
+then
     git clone "${git_repo}" "${docker_dir}"
 fi
+
+if [ ! -d "${config_path}" ]
+then
+  echo "${config_path} doesn't exist, creating..."
+  mkdir -p "${config_path}"
+fi 
+
+for path in "${storage_paths[@]}"
+do 
+  if [ ! -d "${path}" ]
+  then
+    echo "${path} doesn't exist, creating..."
+    mkdir -p "${path}"
+  fi
+done
 
 if [ -f "${script_path}/Dockerfile" ]
 then
@@ -38,7 +54,7 @@ fi
 wd="$(pwd)"
 cd "${docker_dir}"
 
-tag=$(date +'%d.%m.%Y_%N')
+tag=$(date +'%d.%m.%Y_%H.%M.%s')
 
 sudo docker build --no-cache --pull -t lscr.io/linuxserver/radarr:"${tag}" .
 rm -rf "${docker_dir}"

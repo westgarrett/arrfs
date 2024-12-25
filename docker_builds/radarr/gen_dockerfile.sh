@@ -1,10 +1,10 @@
 #!/bin/bash
 script_dir="$(dirname ${0})"
-repo="https://github.com/westgarrett/rfs.git"
+repo="https://github.com/westgarrett/arrfs.git"
 branch="$(git rev-parse --abbrev-ref HEAD)"
 # branch_single=true
 branch_args=${branch_single:-true} && branch_args="--single-branch" || branch_args=""
-destination="/app/rfs"
+destination="/app/arrfs"
 if [ -f "${script_dir}/Dockerfile" ]
 then
     echo "previous Dockerfile found, removing it"
