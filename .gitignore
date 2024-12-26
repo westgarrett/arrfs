@@ -1,0 +1,7 @@
+**/venv
+**/__pycache__
+docker_builds/radarr/docker-compose.yml
+docker_builds/radarr/Dockerfile
+docker_builds/radarr/docker-radarr
+docker_builds/radarr/config
+docker_builds/radarr/storage*
