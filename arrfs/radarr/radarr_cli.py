@@ -5,13 +5,7 @@ import shutil
 import subprocess
 from typing import Tuple, Dict, Union
 
-DB_DRIVE_PATH: str = "./db_drive"
-TC_DRIVE_PATH: str = "./tc_drive"
-STORAGE_DRIVE_PATH: Tuple[str, ...] = (
-    "./storage0",
-    "./storage1",
-)
-
+from main import create_symlink, compare_drive_capacity, get_path_info
 
 # Group 1: On Grab Event
 @click.command()
@@ -302,28 +296,28 @@ def download(
 ):
     click.echo("download event")
     print(
-    radarr_download_id,
-    radarr_download_client,
-    radarr_isupgrade,
-    radarr_movie_id,
-    radarr_movie_imdbid,
-    radarr_movie_in_cinemas_date,
-    radarr_movie_path,
-    radarr_movie_physical_release_date,
-    radarr_movie_title,
-    radarr_movie_tmdbid,
-    radarr_movie_year,
-    radarr_moviefile_id,
-    radarr_moviefile_relativepath,
-    radarr_moviefile_path,
-    radarr_moviefile_quality,
-    radarr_moviefile_qualityversion,
-    radarr_moviefile_releasegroup,
-    radarr_moviefile_scenename,
-    radarr_moviefile_sourcepath,
-    radarr_moviefile_sourcefolder,
-    radarr_deletedrelativepath,
-    radarr_deletedpaths,
+        radarr_download_id,
+        radarr_download_client,
+        radarr_isupgrade,
+        radarr_movie_id,
+        radarr_movie_imdbid,
+        radarr_movie_in_cinemas_date,
+        radarr_movie_path,
+        radarr_movie_physical_release_date,
+        radarr_movie_title,
+        radarr_movie_tmdbid,
+        radarr_movie_year,
+        radarr_moviefile_id,
+        radarr_moviefile_relativepath,
+        radarr_moviefile_path,
+        radarr_moviefile_quality,
+        radarr_moviefile_qualityversion,
+        radarr_moviefile_releasegroup,
+        radarr_moviefile_scenename,
+        radarr_moviefile_sourcepath,
+        radarr_moviefile_sourcefolder,
+        radarr_deletedrelativepath,
+        radarr_deletedpaths,
     )
 
 
@@ -530,7 +524,7 @@ def get_radarr_eventtype():
     return os.getenv("radarr_eventtype", default="Test")
 
 
-def handle_event(db_drive_path: str, tc_drive_path: str, storage_drive_path: str):
+def handle_event(db_drive_path: str, download_drive_path: str, storage_drive_path: str):
     sys.argv = [__repr__]
     radarr_eventtype = get_radarr_eventtype()
     event_types = [
@@ -545,7 +539,7 @@ def handle_event(db_drive_path: str, tc_drive_path: str, storage_drive_path: str
         raise ValueError(f"radarr_eventtype == {radarr_eventtype}")
     for _type in event_types:
         if radarr_eventtype == _type:
-            eval(f"{_type.lower()}()")
+            getattr(sys.modules[__name__], _type.lower())()
 
 
 __repr__: str = f"{__name__}.{get_radarr_eventtype().lower()}"

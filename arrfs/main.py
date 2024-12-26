@@ -4,16 +4,17 @@ import shutil
 import subprocess
 import sys
 import pathlib
+import pprint
+import tomli
+from types import SimpleNamespace
 from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr_cli
 import sonarr.sonarr_cli as sonarr_cli
 
-DB_DRIVE_PATH: str = "./db_drive"
-TC_DRIVE_PATH: str = "./tc_drive"
-STORAGE_DRIVE_PATH: Tuple[str, ...] = (
-    "./storage0",
-    "./storage1",
+CONFIG_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "config", "config.toml"
 )
+
 
 # Event type passed from the trigger shell script
 @click.command()
@@ -25,35 +26,64 @@ STORAGE_DRIVE_PATH: Tuple[str, ...] = (
 )
 @click.option("--debug/--no-debug", is_flag=True, default=False, help="Debug mode")
 @click.option(
-    "--db_drive_path",
+    "--arrfs_path",
     default=None,
-    help=f"Database drive path, overrides {DB_DRIVE_PATH}",
+    help=f"Database path",
 )
 @click.option(
-    "--tc_drive_path",
+    "--download_drive_path",
     default=None,
-    help=f"Torrent client drive path, overrides {TC_DRIVE_PATH}",
+    help=f"Download drive path",
 )
 @click.option(
     "--storage_drive_path",
     default=None,
     multiple=True,
-    help=f"Storage drives to bundle together, ex. {STORAGE_DRIVE_PATH}",
+    help=f"Storage drive path(s) to bundle together",
 )
+@click.option("--config_path", default=None, help="Path to config.toml")
 @click.pass_context
 def eventtype(
     ctx,
     callarr,
     debug,
-    db_drive_path: str,
-    tc_drive_path: str,
+    arrfs_path: str,
+    download_drive_path: str,
     storage_drive_path: List[str],
+    config_path: str,
 ):
     """Event type passed from the trigger shell script"""
+    config_namespace = read_config(
+        config_path if config_path is not None else CONFIG_PATH
+    )
+    print(f"Loading {config_namespace.title}")
+
+    # symlink db path
+    arrfs_path = (
+        arrfs_path if arrfs_path is not None else config_namespace.arrfs.root_path
+    )
+    assert arrfs_path is not None
+
+    # *arr configs
+    callarr_namespace = config_namespace.__getattribute__(callarr)
+    download_drive_path = (
+        download_drive_path
+        if download_drive_path is not None
+        else callarr_namespace.downloads_path
+    )
+    assert download_drive_path is not None
+
+    storage_drive_path = (
+        storage_drive_path
+        if storage_drive_path is not None
+        else [v for _, v in config_namespace.storage]
+    )
+    assert storage_drive_path is not None
+
     if callarr == "radarr":
-        radarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
+        radarr_cli.handle_event(arrfs_path, download_drive_path, storage_drive_path)
     elif callarr == "sonarr":
-        sonarr_cli.handle_event(db_drive_path, tc_drive_path, storage_drive_path)
+        sonarr_cli.handle_event(arrfs_path, download_drive_path, storage_drive_path)
     else:
         raise ValueError(f"Unsupported callarr value: {callarr}")
 
@@ -68,7 +98,7 @@ def create_symlink(db_path: str, true_path: str):
     return db_path
 
 
-def get_path_info(path_info: str) -> dict:
+def get_path_info(path_info: str) -> SimpleNamespace:
     """Get the total, used and free capacities of a path"""
     path_info = None
     if os.path.exists(path_info):
@@ -76,16 +106,26 @@ def get_path_info(path_info: str) -> dict:
     else:
         print(f"drive at {path_info} does not exist")
 
-    return zip(path_info._fields, path_info) if path_info else {}
+    return (
+        SimpleNamespace(zip(path_info._fields, path_info))
+        if path_info
+        else SimpleNamespace()
+    )
 
-def read_config():
-    """Read config values from config.toml"""
-    pass
 
 def compare_drive_capacity():
     """Compare the capacity of the drives."""
     pass
 
 
+def read_config(config_path: str) -> SimpleNamespace:
+    """Read config values from config.toml"""
+    with open(config_path, "rb") as config_file:
+        config_dict = tomli.load(config_file)
+    config_namespace = SimpleNamespace(**config_dict)
+    return config_namespace
+
+
 if __name__ == "__main__":
+    config_namespace = read_config(CONFIG_PATH)
     eventtype()
