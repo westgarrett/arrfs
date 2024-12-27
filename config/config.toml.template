@@ -1,0 +1,32 @@
+# config file for arrfs
+# this config file is read by both the docker_build and arrfs flows
+# edit these parameters to adjust your install 
+# docker image will need re-built to reflect changes
+# https://toml.io/en/
+
+title = "arrfs configuration file"
+
+# the symlink file system location
+[arrfs]
+# root_path = "/your/arrfs/directory"
+root_path = "/home/${USER}"
+
+# non-specific storage
+[storage]
+# storage_name = "/your/storage/path(s)"
+primary = "/storage0"
+secondary = "/storage1"
+
+[radarr]
+git_repo = "https://github.com/linuxserver/docker-radarr.git"
+config_path = "/path/to/config"
+downloads_path = "/path/to/downloads"
+import_path = "/path/to/imports"
+# radarr_specific_storage = "/radarr/storage/path"
+
+[sonarr]
+git_repo = "https://github.com/linuxserver/docker-sonarr.git"
+config_path = "/path/to/config"
+downloads_path = "/path/to/downloads"
+import_path = "/path/to/imports"
+# sonarr_specific_storage = "/sonarr/storage/path"
