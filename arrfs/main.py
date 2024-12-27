@@ -6,7 +6,7 @@ import sys
 import pathlib
 import pprint
 import tomli
-from types import SimpleNamespace
+from collections import namedtuple
 from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr_cli
 import sonarr.sonarr_cli as sonarr_cli
@@ -73,11 +73,14 @@ def eventtype(
     )
     assert download_drive_path is not None
 
-    storage_drive_path = (
-        storage_drive_path
-        if storage_drive_path is not None
-        else [v for _, v in config_namespace.storage]
-    )
+    storage_drive_path = [
+        path
+        for path in (
+            storage_drive_path
+            if storage_drive_path is not None
+            else [v for _, v in config_namespace.storage]
+        )
+    ]
     assert storage_drive_path is not None
 
     if callarr == "radarr":
@@ -98,32 +101,29 @@ def create_symlink(db_path: str, true_path: str):
     return db_path
 
 
-def get_path_info(path_info: str) -> SimpleNamespace:
+def get_path_info(path: str) -> namedtuple | None:
     """Get the total, used and free capacities of a path"""
-    path_info = None
+    path = None
     if os.path.exists(path_info):
-        path_info = shutil.disk_usage(path_info)
+        path_info = shutil.disk_usage(path)
     else:
-        print(f"drive at {path_info} does not exist")
+        print(f"drive at {path} does not exist")
 
-    return (
-        SimpleNamespace(zip(path_info._fields, path_info))
-        if path_info
-        else SimpleNamespace()
-    )
+    return path_info if path_info else None
 
 
 def compare_drive_capacity():
-    """Compare the capacity of the drives."""
+    """Compare the capacity of the configured drives."""
     pass
 
 
-def read_config(config_path: str) -> SimpleNamespace:
+def read_config(config_path: str) -> namedtuple:
     """Read config values from config.toml"""
     with open(config_path, "rb") as config_file:
         config_dict = tomli.load(config_file)
-    config_namespace = SimpleNamespace(**config_dict)
-    return config_namespace
+    config_class = namedtuple("ArrfsConfig", config_dict.keys())
+    config_obj = config_class(**config_dict)
+    return config_obj
 
 
 if __name__ == "__main__":
