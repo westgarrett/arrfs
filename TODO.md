@@ -20,3 +20,13 @@ when a directory is populated in /operations/casio/radarr, a script (maybe exist
         * I have a feeling that hard links will cause more issues when deleting/updating files
         * the *arrs all warn that using symlinks isn't recommended and I've always been curious why
     * I also want to find out if a jellyfin library scan on the symlink db would lower the disk read time. doubtful but test I guess
+Race conditions
+    * if there are multiple download clients, the disk utilization calculation would change dynamically
+        * a singular download client wouldn't have this issue necessarily
+        * if imported from the /operations/casio/* folders it could be a sequential operation, would just be slower
+        * the disk usage information returned from the program would need to have any current write/delete operations accounted for
+        * this means that the disk usage would have to be projected for each event
+        * easy way: get each directory size in /operations/casio/movies and determine where it will go in a queue
+            * this would allow for sequential writes
+            * job A would be writing to disk 1 with size X
+            * job B would be writing to disk 2 because the size of the file in job A transitioned the target disk after adding X to the map 
