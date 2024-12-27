@@ -102,7 +102,7 @@ def create_symlink(db_path: str, true_path: str):
 
 
 def get_path_info(path: str) -> namedtuple | None:
-    """Get the total, used and free capacities of a path"""
+    """Read the total, used and free capacities of a path to an immutable class"""
     path = None
     if os.path.exists(path_info):
         path_info = shutil.disk_usage(path)
@@ -118,7 +118,7 @@ def compare_drive_capacity():
 
 
 def read_config(config_path: str) -> namedtuple:
-    """Read config values from config.toml"""
+    """Read config values from config.toml to immutable class"""
     with open(config_path, "rb") as config_file:
         config_dict = tomli.load(config_file)
     config_class = namedtuple("ArrfsConfig", config_dict.keys())
