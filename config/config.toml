@@ -1,4 +1,5 @@
 # config file for arrfs
+# this config file is read by both the docker_build and arrfs flows
 # edit these parameters to adjust your install 
 # docker image will need re-built to reflect changes
 # https://toml.io/en/
