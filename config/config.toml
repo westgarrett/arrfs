@@ -10,6 +10,8 @@ title = "arrfs configuration file"
 [arrfs]
 # root_path = "/your/arrfs/directory"
 root_path = "/home/gw/arrfs"
+# this defaults to config == "aarfs/aarfs/config/config.toml"
+# config_path = "arrfs/arrfs/config/config.toml"
 
 # non-specific storage
 [storage]
@@ -20,11 +22,11 @@ secondary = "/storage1"
 [radarr]
 git_repo = "https://github.com/linuxserver/docker-radarr.git"
 downloads_path = "/operations/downloads"
-config_path = "/home/gw/projects/arrfs/docker_builds/radarr/config"
+import_path = "/operations/casio/radarr"
 # radarr_specific_storage = "/radarr/storage/path"
 
 [sonarr]
 git_repo = "https://github.com/linuxserver/docker-sonarr.git"
 downloads_path = "/operations/downloads"
-config_path = "/home/gw/projects/arrfs/docker_builds/sonarr/config"
+import_path = "/operations/casio/sonarr"
 # sonarr_specific_storage = "/sonarr/storage/path"

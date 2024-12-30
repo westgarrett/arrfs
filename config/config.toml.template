@@ -8,8 +8,10 @@ title = "arrfs configuration file"
 
 # the symlink file system location
 [arrfs]
-# root_path = "/your/arrfs/directory"
-root_path = "/home/${USER}"
+# root_path = "/your/arrfs/db"
+root_path = "/home/<USER>/arrfs"
+# this defaults to config == "aarfs/aarfs/config/config.toml"
+# config_path = "arrfs/arrfs/config/config.toml"
 
 # non-specific storage
 [storage]
@@ -19,14 +21,12 @@ secondary = "/storage1"
 
 [radarr]
 git_repo = "https://github.com/linuxserver/docker-radarr.git"
-config_path = "/path/to/config"
 downloads_path = "/path/to/downloads"
 import_path = "/path/to/imports"
 # radarr_specific_storage = "/radarr/storage/path"
 
 [sonarr]
 git_repo = "https://github.com/linuxserver/docker-sonarr.git"
-config_path = "/path/to/config"
 downloads_path = "/path/to/downloads"
 import_path = "/path/to/imports"
 # sonarr_specific_storage = "/sonarr/storage/path"
