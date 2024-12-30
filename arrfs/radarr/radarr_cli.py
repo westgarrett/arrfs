@@ -1,9 +1,10 @@
 import sys
 import click
 import os
+import pprint
 import shutil
 import subprocess
-from typing import Tuple, Dict, Union
+from typing import List
 
 from main import create_symlink, compare_drive_capacity, get_path_info
 
@@ -116,24 +117,8 @@ def grab(
     radarr_release_size,
     radarr_release_title,
 ):
-    print("grab command")
-    print(
-        radarr_download_client,
-        radarr_download_id,
-        radarr_movie_id,
-        radarr_movie_imdbid,
-        radarr_movie_in_cinemas_date,
-        radarr_movie_physical_release_date,
-        radarr_movie_title,
-        radarr_movie_tmdbid,
-        radarr_movie_year,
-        radarr_release_indexer,
-        radarr_release_quality,
-        radarr_release_qualityversion,
-        radarr_release_releasegroup,
-        radarr_release_size,
-        radarr_release_title,
-    )
+    click.echo("grab command")
+    pprint.pprint(locals())
 
 
 # Group 2: On Import/On Upgrade Event
@@ -295,30 +280,7 @@ def download(
     radarr_deletedpaths,
 ):
     click.echo("download event")
-    print(
-        radarr_download_id,
-        radarr_download_client,
-        radarr_isupgrade,
-        radarr_movie_id,
-        radarr_movie_imdbid,
-        radarr_movie_in_cinemas_date,
-        radarr_movie_path,
-        radarr_movie_physical_release_date,
-        radarr_movie_title,
-        radarr_movie_tmdbid,
-        radarr_movie_year,
-        radarr_moviefile_id,
-        radarr_moviefile_relativepath,
-        radarr_moviefile_path,
-        radarr_moviefile_quality,
-        radarr_moviefile_qualityversion,
-        radarr_moviefile_releasegroup,
-        radarr_moviefile_scenename,
-        radarr_moviefile_sourcepath,
-        radarr_moviefile_sourcefolder,
-        radarr_deletedrelativepath,
-        radarr_deletedpaths,
-    )
+    pprint.pprint(locals())
 
 
 # Group 3: On Rename Event
@@ -416,23 +378,8 @@ def rename(
     radarr_moviefile_previousrelativepaths,
     radarr_moviefile_previouspaths,
 ):
-    print("rename event")
-    print(
-        radarr_movie_id,
-        radarr_movie_title,
-        radarr_movie_year,
-        radarr_movie_path,
-        radarr_movie_imdbid,
-        radarr_movie_tmdbid,
-        radarr_movie_in_cinemas_date,
-        radarr_movie_physical_release_date,
-        radarr_moviefile_ids,
-        radarr_moviefile_relativepaths,
-        radarr_moviefile_relativepaths,
-        radarr_moviefile_paths,
-        radarr_moviefile_previousrelativepaths,
-        radarr_moviefile_previouspaths,
-    )
+    click.echo("rename event")
+    pprint.pprint(locals())
 
 
 # Group 4: On Health Check Event
@@ -467,14 +414,8 @@ def healthissue(
     radarr_health_issue_type,
     radarr_health_issue_wiki,
 ):
-    print(
-        radarr_health_issue_level,
-        radarr_health_issue_message,
-        radarr_health_issue_type,
-        radarr_health_issue_wiki,
-    )
     click.echo("healthissue event")
-
+    pprint.pprint(locals())
 
 # Group 5: On Application Update Event
 @click.command()
@@ -508,10 +449,8 @@ def applicationupdate(
     if radarr_update_previousversion is None:
         pass
 
-    print(
-        radarr_update_message, radarr_update_newversion, radarr_update_previousversion
-    )
     click.echo("applicationupdate event")
+    pprint.pprint(locals())
     # do stuff
 
 
@@ -524,7 +463,7 @@ def get_radarr_eventtype():
     return os.getenv("radarr_eventtype", default="Test")
 
 
-def handle_event(db_drive_path: str, download_drive_path: str, storage_drive_path: str):
+def handle_event(arrfs_path: str, download_drive_path: str, storage_drive_path: List[str]):
     sys.argv = [__repr__]
     radarr_eventtype = get_radarr_eventtype()
     event_types = [
