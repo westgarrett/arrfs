@@ -11,7 +11,7 @@ from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr_cli
 import sonarr.sonarr_cli as sonarr_cli
 
-CONFIG_PATH = os.path.join(
+DEFAULT_CONFIG_PATH = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "config", "config.toml"
 )
 
@@ -54,7 +54,7 @@ def eventtype(
 ):
     """Event type passed from the trigger shell script"""
     config_namespace = read_config(
-        config_path if config_path is not None else CONFIG_PATH
+        config_path if config_path is not None else DEFAULT_CONFIG_PATH
     )
     print(f"Loading {config_namespace.title}")
 
@@ -127,5 +127,5 @@ def read_config(config_path: str) -> namedtuple:
 
 
 if __name__ == "__main__":
-    config_namespace = read_config(CONFIG_PATH)
+    config_namespace = read_config(DEFAULT_CONFIG_PATH)
     eventtype()
