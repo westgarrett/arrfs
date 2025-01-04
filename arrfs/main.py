@@ -11,10 +11,10 @@ from typing import Tuple, List, Dict, Union
 import radarr.radarr_cli as radarr_cli
 import sonarr.sonarr_cli as sonarr_cli
 
+
 DEFAULT_CONFIG_PATH = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "config", "config.toml"
 )
-
 
 # Event type passed from the trigger shell script
 @click.command()
@@ -89,32 +89,6 @@ def eventtype(
         sonarr_cli.handle_event(arrfs_path, download_drive_path, storage_drive_path)
     else:
         raise ValueError(f"Unsupported callarr value: {callarr}")
-
-
-def create_symlink(db_path: str, true_path: str):
-    """Create a symbolic link to the true path."""
-    if os.path.exists(db_path):
-        os.remove(db_path)
-        os.symlink(true_path, db_path)
-    else:
-        os.symlink(true_path, db_path)
-    return db_path
-
-
-def get_path_info(path: str) -> namedtuple | None:
-    """Read the total, used and free capacities of a path to an immutable class"""
-    path = None
-    if os.path.exists(path_info):
-        path_info = shutil.disk_usage(path)
-    else:
-        print(f"drive at {path} does not exist")
-
-    return path_info if path_info else None
-
-
-def compare_drive_capacity():
-    """Compare the capacity of the configured drives."""
-    pass
 
 
 def read_config(config_path: str) -> namedtuple:
