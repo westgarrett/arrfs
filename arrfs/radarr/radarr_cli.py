@@ -8,6 +8,7 @@ from typing import List
 
 from main import create_symlink, compare_drive_capacity, get_path_info
 
+
 # Group 1: On Grab Event
 @click.command()
 @click.argument(
@@ -417,6 +418,7 @@ def healthissue(
     click.echo("healthissue event")
     pprint.pprint(locals())
 
+
 # Group 5: On Application Update Event
 @click.command()
 @click.argument(
@@ -440,15 +442,6 @@ def healthissue(
 def applicationupdate(
     radarr_update_message, radarr_update_newversion, radarr_update_previousversion
 ):
-    if radarr_update_message is None:
-        pass
-
-    if radarr_update_newversion is None:
-        pass
-
-    if radarr_update_previousversion is None:
-        pass
-
     click.echo("applicationupdate event")
     pprint.pprint(locals())
     # do stuff
@@ -463,7 +456,9 @@ def get_radarr_eventtype():
     return os.getenv("radarr_eventtype", default="Test")
 
 
-def handle_event(arrfs_path: str, download_drive_path: str, storage_drive_path: List[str]):
+def handle_event(
+    arrfs_path: str, download_drive_path: str, storage_drive_path: List[str]
+):
     sys.argv = [__repr__]
     radarr_eventtype = get_radarr_eventtype()
     event_types = [
