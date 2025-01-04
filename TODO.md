@@ -5,6 +5,10 @@ operation is already in-progress, so the only handling I can do is determining w
         * get the file path from the environment variable and watch for the file to be present on the temp disk
         * that operation is only a mv, just moving file pointers around
 
+the entire trigger script framework may not be needed at all lol
+I've already kind of scrapped it from the current execution by introducting an explicit config file
+it's worth maintaining for some other use; notifications, analytics/dashboards
+
 
 radarr import path is set to /operations/casio/radarr (or something more descriptive)
 radarr downloads "some movie 2024" on /operations/downloads
@@ -12,13 +16,21 @@ once completed, radarr either prompts for manual imports or automatically proces
 a daemon will be watching /operations/casio/radarr for these directories
     * this is where we could do any sort of post-processing and media analysis as well
 when a directory is populated in /operations/casio/radarr, a script (maybe existing idk) would classify the media and system condition
-    * disk capacity, free space, usage and calculation of most space efficient/speed/etc (actually would be auto-populated in a config file)
+    * disk capacity, free space, usage and calculation of most space efficient/speed/etc (would be auto-populated in a config file?)
     * there's a question of if spreading like series episodes across multiple disks with the same folder name is doable or not, need to test
+        * os.walk over the directories and have the directory structure completely mirrored in symlinks
     * otherwise, media directory size would be evaluated and then be sent to a determined disk
     * a symlink would be simultaneously created with the same directory name and inserted into /arrfs/movies
         * will need to test hard links and balance the pros/cons
         * I have a feeling that hard links will cause more issues when deleting/updating files
         * the *arrs all warn that using symlinks isn't recommended and I've always been curious why
+        * is there any reason that the symlink db generation can't be done after all of the media is spread across disks?
+            * the only reason I can see this not working is if radarr needs the import_path == library_path
+                * radarr wouldn't be able to maintain true function
+            * each storage device listed in the config file would have a movies/shows/etc
+            directory, and the media would be thrown into those files regardless
+            * then the symlink db could be generated on-change in the daemon
+            * that way if something is deleted from the disk the db can be rewritten instead of edited
     * I also want to find out if a jellyfin library scan on the symlink db would lower the disk read time. doubtful but test I guess
 Race conditions
     * if there are multiple download clients, the disk utilization calculation would change dynamically
