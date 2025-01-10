@@ -10,11 +10,13 @@ title = "arrfs configuration file"
 [arrfs]
 # root_path = "/your/arrfs/directory"
 root_path = "/home/gw/arrfs"
-# this defaults to config == "aarfs/aarfs/config/config.toml"
+# this defaults to config == "arrfs/arrfs/config/config.toml"
 # config_path = "arrfs/arrfs/config/config.toml"
 
 # non-specific storage
 [storage]
+# TODO: need a way to determine what the chosen "efficiency parameters" for storage decisions are
+[paths]
 # storage_name = "/your/storage/path(s)"
 primary = "/storage0"
 secondary = "/storage1"
